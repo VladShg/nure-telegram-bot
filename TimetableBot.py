@@ -115,13 +115,13 @@ async def timetable(id, num):
             s += '\n'
             s += "[" + str(start[e['number_pair'] - 1]) + "-" + str(end[e['number_pair'] - 1]) + "] " + "[" + e['auditory'] + "] "
             a = subject_full_name(obj, e["subject_id"])
-            if short_t == 1:
+            if short_s == 1:
                 a = subject_short_name(obj, e["subject_id"])
             s += a
             if len(e['teachers']) > 0:
                 s += "\n"
                 a = teacher_full_name(obj, e['teachers'][0])
-                if short_s == 1:
+                if short_t == 1:
                     a = teacher_short_name(obj, e['teachers'][0])
                 s += a
                 
