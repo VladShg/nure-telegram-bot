@@ -121,7 +121,7 @@ async def timetable(id, num):
             if len(e['teachers']) > 0:
                 s += "\n"
                 a = teacher_full_name(obj, e['teachers'][0])
-                if short_t == 1:
+                if short_s == 1:
                     a = teacher_short_name(obj, e['teachers'][0])
                 s += a
                 
