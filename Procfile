@@ -1,1 +1,1 @@
-web: python TimetableBot.py
+worker: python TimetableBot.py
