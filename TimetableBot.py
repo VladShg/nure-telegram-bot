@@ -85,8 +85,8 @@ async def timetable(id, num):
     url = "http://cist.nure.ua/ias/app/tt/P_API_EVEN_JSON?timetable_id=" + str(group_id) + "&type_id=1&time_from=" + str(ep_start) + "&time_to=" + str(ep_end)
     http = urllib3.PoolManager()
 
-    await bot.send_message(id, str(ep_start))
-    await bot.send_message(id, str(ep_end))
+    #await bot.send_message(id, str(ep_start))
+    #await bot.send_message(id, str(ep_end))
     
     r = http.request('GET', url)
     obj = dict()
@@ -200,7 +200,7 @@ async def process_callback_enter_group(call: types.CallbackQuery):
     with conn:
         c.execute("UPDATE users SET group_id = :upd, group_name = :g_n, faculty_name = :f_n WHERE id=:id",
         {'upd': group['id'], 'id': call.message.chat.id, 'g_n': group['name'], 'f_n': faculty['full_name']})
-    await bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Изменения вступили в силу")        
+    await bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Изменения вступили в силу", reply_markup=kb_additional)        
 
 @dp.callback_query_handler()
 async def process_callback_button1(call: types.CallbackQuery):
