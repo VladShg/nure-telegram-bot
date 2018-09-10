@@ -105,6 +105,9 @@ async def timetable(id, num):
             event_day[key] = list()
             event_day[key].append(event)
 
+    await dp.send_message(str(ep_start))
+    await dp.send_message(str(ep_end))
+
     if len(event_day) == 0:
         print("Пар не найдено")
         return
