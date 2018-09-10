@@ -234,13 +234,13 @@ async def subject_name_change(msg: types.Message):
     await process_settings_command(msg)
 
 @dp.message_handler(commands=["random"])
-async def process_random_handler(message: types.Message)
+async def process_random_handler(message: types.Message):
     files = list()
     for f in os.listdir("/random"):
         files.append(f.split(".")[0])
     i = random.randrange(len(list) - 1)
     f = open('random/'+files[i]+".png", 'rb')
-    await bot.send_photo(message.from_user.id, caption = files[i], reply_markup=kb_additional,
+    await bot.send_photo(message.from_user.id, caption = files[i].data.decode('cp1251'), reply_markup=kb_additional,
                     photo=f)
 
 
