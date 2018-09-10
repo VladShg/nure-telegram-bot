@@ -239,7 +239,7 @@ async def process_random_handler(message: types.Message):
     files = list()
     for f in os.listdir("random/"):
         files.append(f.split(".")[0])
-    i = random.randrange(len(list) - 1)
+    i = random.randrange(len(files) - 1)
     f = open('random/'+files[i]+".png", 'rb')
     await bot.send_photo(message.from_user.id, caption = files[i].data.decode('cp1251'), reply_markup=kb_additional,
                     photo=f)
