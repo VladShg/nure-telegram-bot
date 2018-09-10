@@ -239,7 +239,7 @@ async def process_random_handler(message: types.Message):
     files = list()
     for f in os.listdir("random/"):
         files.append(f.split(".")[0])
-    i = random.randrange(len(files) - 1)
+    i = random.randrange(len(files))
     f = open('random/'+files[i]+".png", 'rb')
     await bot.send_photo(message.from_user.id, caption = files[i], reply_markup=kb_additional,
                     photo=f)
@@ -273,6 +273,8 @@ async def process_settings_command(msg: types.Message):
             string += "Полные имена преподавателей: {} /tn\n".format(full_t)
             string += "\n"
             string += "🔍 Справка /help"
+            string += "\n"
+            string += "Из процесса разработки /random "
 
             #if msg.from_user.id == MY_ID:
             await bot.send_message(msg.from_user.id, string, reply_markup=kb_settings)
