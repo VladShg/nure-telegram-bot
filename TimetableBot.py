@@ -200,7 +200,7 @@ async def process_callback_enter_group(call: types.CallbackQuery):
     with conn:
         c.execute("UPDATE users SET group_id = :upd, group_name = :g_n, faculty_name = :f_n WHERE id=:id",
         {'upd': group['id'], 'id': call.message.chat.id, 'g_n': group['name'], 'f_n': faculty['full_name']})
-    await bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Изменения вступили в силу", reply_markup=kb_additional)        
+    await bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Изменения вступили в силу")        
 
 @dp.callback_query_handler()
 async def process_callback_button1(call: types.CallbackQuery):
@@ -262,7 +262,7 @@ async def process_settings_command(msg: types.Message):
             string += "🔍 Справка /help"
 
             #if msg.from_user.id == MY_ID:
-            await bot.send_message(msg.from_user.id, string, reply_markup=kb_settings)
+            await bot.send_message(msg.from_user.id, string, reply_markup=kb_settings, one_time_keyboart=False)
 
 @dp.message_handler(commands=['help'])
 async def process_info_command(msg: types.Message):
