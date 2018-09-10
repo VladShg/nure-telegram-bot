@@ -274,7 +274,7 @@ async def process_settings_command(msg: types.Message):
             string += "\n"
             string += "🔍 Справка /help"
             string += "\n"
-            string += "Из процесса разработки /random "
+            string += "❤️ /random Из процесса разработки"
 
             #if msg.from_user.id == MY_ID:
             await bot.send_message(msg.from_user.id, string, reply_markup=kb_settings)
