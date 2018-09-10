@@ -71,7 +71,7 @@ async def timetable(id, num):
     s_start = datetime.datetime.now()
     if (s_start.hour >= 18 and s_start.minute >= 15) or s_start.hour >= 19:
         s_start += datetime.timedelta(days=1)
-    s_end = s_start + datetime.timedelta(days=num - 1)
+    s_end = s_start + datetime.timedelta(days=num)
 
     d_start = s_start.strftime("%Y-%m-%d")
     d_end = s_end.strftime("%Y-%m-%d")
