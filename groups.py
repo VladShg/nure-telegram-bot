@@ -1,7 +1,7 @@
 import urllib3
 import json
 
-url = "http://cist.nure.ua/ias/app/tt/P_API_GROUP_JSON"
+url = "http://cist.nure.ua/ias/app/tt/P_API_EVEN_JSON?timetable_id=6496579&type_id=1&time_from=1535760000&time_to=1543622400"
 
 http = urllib3.PoolManager()
 r = http.request('GET', url)

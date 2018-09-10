@@ -9,6 +9,7 @@ import datetime
 import time
 import urllib3
 import json
+import os
 from time import sleep
 from id import subject_full_name, subject_short_name, teacher_full_name, teacher_short_name
 from config import TOKEN, MY_ID, StatesGroup
@@ -231,6 +232,17 @@ async def teacher_name_change(msg: types.Message):
 async def subject_name_change(msg: types.Message):
     boolChange(msg.from_user.id, "short_subj")
     await process_settings_command(msg)
+
+@dp.message_handler(commands=["random"])
+async def process_random_handler(message: types.Message)
+    files = list()
+    for f in os.listdir("/random"):
+        files.append(f.split(".")[0])
+    i = random.randrange(len(list) - 1)
+    f = open('random/'+files[i]+".png", 'rb')
+    await bot.send_photo(message.from_user.id, caption = files[i], reply_markup=kb_additional,
+                    photo=f)
+
 
 @dp.message_handler(regexp="\A(⚙️)\Z")
 async def process_emoji_settings_command(msg: types.Message):
