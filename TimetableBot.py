@@ -84,6 +84,9 @@ async def timetable(id, num):
     
     url = "http://cist.nure.ua/ias/app/tt/P_API_EVEN_JSON?timetable_id=" + str(group_id) + "&type_id=1&time_from=" + str(ep_start) + "&time_to=" + str(ep_end)
     http = urllib3.PoolManager()
+
+    await bot.send_message(id, str(ep_start))
+    await bot.send_message(id, str(ep_end))
     
     r = http.request('GET', url)
     obj = dict()
@@ -104,9 +107,6 @@ async def timetable(id, num):
         except:
             event_day[key] = list()
             event_day[key].append(event)
-
-    await bot.send_message(id, str(ep_start))
-    await bot.send_message(id, str(ep_end))
 
     if len(event_day) == 0:
         print("Пар не найдено")
