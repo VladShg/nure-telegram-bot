@@ -1,6 +1,6 @@
 from enum import Enum
 
-TOKEN = "633399058:AAG3BIGeXhnAsCF2sDLBIlCs-4NIXhmDXig"
+TOKEN = "677779116:AAGfKJSZqvsb-qTVXVR3rzYx2rST0MOw6h0"
 MY_ID = 108458898
 
 class StatesGroup(Enum):
