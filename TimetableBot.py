@@ -262,7 +262,7 @@ async def process_settings_command(msg: types.Message):
             string += "🔍 Справка /help"
 
             #if msg.from_user.id == MY_ID:
-            await bot.send_message(msg.from_user.id, string, reply_markup=kb_settings, one_time_keyboart=False)
+            await bot.send_message(msg.from_user.id, string, reply_markup=kb_settings)
 
 @dp.message_handler(commands=['help'])
 async def process_info_command(msg: types.Message):
@@ -322,7 +322,7 @@ kb_settings.insert(btn_home)
 kb_settings.insert(btn_settings)
 kb_settings.insert(btn_info)
 
-kb_additional = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+kb_additional = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=False)
 kb_additional.insert(btn_home)
 kb_additional.insert(btn_settings)
 
