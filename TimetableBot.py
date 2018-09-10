@@ -10,6 +10,7 @@ import time
 import urllib3
 import json
 import os
+import random
 from time import sleep
 from id import subject_full_name, subject_short_name, teacher_full_name, teacher_short_name
 from config import TOKEN, MY_ID, StatesGroup
