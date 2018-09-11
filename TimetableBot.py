@@ -71,6 +71,7 @@ async def timetable(id, num):
             return
 
     s_start = datetime.datetime.now()
+    s_start -= datetime.timedelta(days=1)
     if (s_start.hour >= 18 and s_start.minute >= 15) or s_start.hour >= 19:
         await bot.send_message(id, "i was here")
         s_start += datetime.timedelta(days=1)
