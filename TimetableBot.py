@@ -72,8 +72,7 @@ async def timetable(id, num):
 
     s_start = datetime.datetime.now()
     s_start -= datetime.timedelta(days=1)
-    if (s_start.hour >= 18 and s_start.minute >= 15) or s_start.hour >= 19:
-        await bot.send_message(id, "i was here")
+    if s_start.hour >= 19:
         s_start += datetime.timedelta(days=1)
     s_end = s_start + datetime.timedelta(days=num)
 
@@ -86,15 +85,9 @@ async def timetable(id, num):
     ep_start = int(time.mktime(t_start))
     ep_end = int(time.mktime(t_end))
 
-    await bot.send_message(id, t_start)
-    await bot.send_message(id, t_end)
-    
     url = "http://cist.nure.ua/ias/app/tt/P_API_EVEN_JSON?timetable_id=" + str(group_id) + "&type_id=1&time_from=" + str(ep_start) + "&time_to=" + str(ep_end)
     http = urllib3.PoolManager()
 
-    #await bot.send_message(id, str(ep_start))
-    #await bot.send_message(id, str(ep_end))
-    
     r = http.request('GET', url)
     obj = dict()
     try:
