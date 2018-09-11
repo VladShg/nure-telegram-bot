@@ -7,8 +7,6 @@ http = urllib3.PoolManager()
 r = http.request('GET', url)
 cyrillic = r.data.decode('cp1251')
 
-a = type(r)
-
 DATA = json.loads(r.data.decode('cp1251'))
 
 
