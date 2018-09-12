@@ -114,6 +114,8 @@ async def timetable(id, num):
 
     for k in event_day:
         s = k
+        d = strptime("%d.%m.%Y", k)
+        await bot.send_message(id, d)
         for e in event_day[k]:
             s += '\n'
             s += "[" + str(start[e['number_pair'] - 1]) + "-" + str(end[e['number_pair'] - 1]) + "] " + "[" + e['auditory'] + "] "
@@ -268,7 +270,7 @@ async def process_settings_command(msg: types.Message):
             string += "Группа: {} /gr\n".format(group)
             string += "Полные имена предметов: {} /sn\n".format(full_s)
             string += "Полные имена преподавателей: {} /tn\n".format(full_t)
-            string += "\n"
+            string += "\n "
             string += "🔍 Справка /help"
             string += "\n"
             string += "💙 /random "
