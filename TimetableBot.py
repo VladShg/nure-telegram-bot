@@ -114,7 +114,7 @@ async def timetable(id, num):
 
     for k in event_day:
         s = k
-        d = strptime("%d.%m.%Y", k)
+        d = time.strptime("%d.%m.%Y", k)
         await bot.send_message(id, d)
         for e in event_day[k]:
             s += '\n'
