@@ -36,9 +36,9 @@ def teacher_short_name(obj,id):
 
 def format_by_type(text, t):
     if t >= 10 and t <= 12: # пракитка
-        return "<i>" + text + "</i>" # italic
+        return "<a href=\"https://goo.gl/5RDYGZ/\">" + text + "</a>" # italic
     if t >= 20 and t <= 24: # лабораторная
-        return "<pre>" + text + "</pre>" # code
+        return "<code>" + text + "</code>" # code
     if t >= 50 and t <= 55: # экзамен
         return "<b>" + text + "</b>" # bold
     return text     # default
