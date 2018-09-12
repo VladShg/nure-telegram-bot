@@ -38,7 +38,7 @@ def format_by_type(text, t):
     if t >= 10 and t <= 12: # пракитка
         return "<i>" + text + "</i>" # italic
     if t >= 20 and t <= 24: # лабораторная
-        return "<code>" + text + "</code>" # code
+        return "<pre>" + text + "</pre>" # code
     if t >= 50 and t <= 55: # экзамен
         return "<b>" + text + "</b>" # bold
     return text     # default
