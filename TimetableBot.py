@@ -12,7 +12,8 @@ import json
 import os
 import random
 from time import sleep
-from id import subject_full_name, subject_short_name, teacher_full_name, teacher_short_name, format_by_type
+from id import subject_full_name, subject_short_name, weekday, \
+               teacher_full_name, teacher_short_name, format_by_type
 from config import TOKEN, MY_ID, StatesGroup
 from groups import DATA
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
@@ -115,9 +116,7 @@ async def timetable(id, num):
     for k in event_day:
         s = k
         d = datetime.datetime.fromtimestamp(event_day[k][0]['start_time'])
-        await bot.send_message(id, d)
-        q = d.weekday()
-        await bot.send_message(id, q)
+        await bot.send_message(id, weekday(d))
         for e in event_day[k]:
             s += '\n'
             s += "[" + str(start[e['number_pair'] - 1]) + "-" + str(end[e['number_pair'] - 1]) + "] " + "[" + e['auditory'] + "] "

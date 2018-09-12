@@ -44,3 +44,20 @@ def format_by_type(text, t):
     return text     # default
 
     # Не использовал italic, потому что при малом обьеме текста очень слабо заметно различия с лекцией
+
+
+def weekday(num):
+    if num == 0:
+        return "Понедельник"
+    if num == 1:
+        return "Вторник"
+    if num == 2:
+        return "Среда"
+    if num == 3:
+        return "Четверг"
+    if num == 4:
+        return "Пятница"
+    if num == 5:
+        return "Суббота"
+    if num == 6:
+        return "Воскресенье"
