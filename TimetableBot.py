@@ -114,9 +114,9 @@ async def timetable(id, num):
         return
 
     for k in event_day:
-        s = k
         d = datetime.datetime.fromtimestamp(event_day[k][0]['start_time'])
-        s += " " + weekday(d.weekday())
+        s = weekday(d.weekday()) + " "
+        s += k
         for e in event_day[k]:
             s += '\n'
             # s += "[" + str(start[e['number_pair'] - 1]) + "-" + str(end[e['number_pair'] - 1]) + "] " + "[" + e['auditory'] + "] "
