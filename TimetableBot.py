@@ -128,7 +128,7 @@ async def timetable(id, num):
                     a = teacher_short_name(obj, e['teachers'][0])
                 s += a
                 
-        await bot.send_message(id, s, reply_markup=kb_additional)
+        await bot.send_message(id, s, reply_markup=kb_additional, parse_mode="HTML")
         time.sleep(0.3)
 
 bot = Bot(token=TOKEN)
