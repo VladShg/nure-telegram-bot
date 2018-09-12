@@ -114,8 +114,10 @@ async def timetable(id, num):
 
     for k in event_day:
         s = k
-        d = time.strptime("%d.%m.%Y", k)
+        d = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(event_day['start_time']))
         await bot.send_message(id, d)
+        q = d.weekday()
+        await bot.send_message(id, q)
         for e in event_day[k]:
             s += '\n'
             s += "[" + str(start[e['number_pair'] - 1]) + "-" + str(end[e['number_pair'] - 1]) + "] " + "[" + e['auditory'] + "] "
