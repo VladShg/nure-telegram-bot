@@ -120,11 +120,12 @@ async def timetable(id, num):
         for e in event_day[k]:
             s += '\n'
             # s += "[" + str(start[e['number_pair'] - 1]) + "-" + str(end[e['number_pair'] - 1]) + "] " + "[" + e['auditory'] + "] "
-            s += str(e['number_pair']) + ") " + e['auditory'] + "- "
+            s += str(e['number_pair']) + ") "
             a = subject_full_name(obj, e["subject_id"])
             if short_s == 1:
                 a = subject_short_name(obj, e["subject_id"])
             s += format_by_type(a, e['type'])
+            s += " " + e['auditory'] + " "
             if len(e['teachers']) > 0:
                 s += "\n"
                 a = teacher_full_name(obj, e['teachers'][0])
