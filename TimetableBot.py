@@ -271,7 +271,7 @@ async def process_settings_command(msg: types.Message):
             string += "\n"
             string += "🔍 Справка /help"
             string += "\n"
-            string += "💙 Из процесса разработки /random "
+            string += "💙 /random "
 
             #if msg.from_user.id == MY_ID:
             await bot.send_message(msg.from_user.id, string, reply_markup=kb_settings)
@@ -294,7 +294,7 @@ async def process_info_command(msg: types.Message):
     # s += "Планы на будущее: напоминания, таймер до конца пары, расписание для преподавателя, фильтр предметов.\n"
     # s += "Автор не претендует на оригинальность или конкуренцию с более ранними приложениями"
     s += "\n\n"
-    s += "Предложения, сбои в работе, новые записи в рандом: @VledSh"
+    s += "Обратная связь: @VledSh"
     await bot.send_message(msg.from_user.id, s, reply_markup=kb_additional, parse_mode="HTML")
 
 @dp.message_handler(regexp="\A(🔍)\Z")
