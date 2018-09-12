@@ -120,7 +120,7 @@ async def timetable(id, num):
             a = subject_full_name(obj, e["subject_id"])
             if short_s == 1:
                 a = subject_short_name(obj, e["subject_id"])
-            s += a
+            s += format_by_type(a, e['type'])
             if len(e['teachers']) > 0:
                 s += "\n"
                 a = teacher_full_name(obj, e['teachers'][0])
@@ -242,7 +242,6 @@ async def process_random_handler(message: types.Message):
     await bot.send_photo(message.from_user.id, caption = files[i], reply_markup=kb_additional,
                     photo=f)
 
-
 @dp.message_handler(regexp="\A(⚙️)\Z")
 async def process_emoji_settings_command(msg: types.Message):
     await process_settings_command(msg)
@@ -283,11 +282,13 @@ async def process_info_command(msg: types.Message):
     s = "Расписание на день работает выдачей записей до конца дня. "
     s += "Если время вызова позднее 18:15, команда обработает записи на завтра. "
     s += "Для недели и месяца аналогично"
+    s += "\n\n"
+    s += "/random - разное из процесса разработки, пока что только 4 записи"
     # s += "\n\n"
     # s += "Планы на будущее: напоминания, таймер до конца пары, расписание для преподавателя, фильтр предметов.\n"
     # s += "Автор не претендует на оригинальность или конкуренцию с более ранними приложениями"
     s += "\n\n"
-    s += "Разработчик: @VledSh"
+    s += "Предложения, сбои в работе, новые записи в рандом: @VledSh"
     await bot.send_message(msg.from_user.id, s, reply_markup=kb_additional)
 
 @dp.message_handler(regexp="\A(🔍)\Z")

@@ -34,21 +34,11 @@ def teacher_short_name(obj,id):
     except:
         return "Not found"
 
-
-# import datetime
-# import time 
-
-# t = datetime.datetime.now()
-
-# print (t)
-
-# now = t + datetime.timedelta(days=1)
-
-# print(t)
-
-# s = str(now.day)+"."+str(now.month)+"."+str(now.year)
-# t_start = time.strptime(s, '%d.%m.%Y')
-# print(datetime.datetime.fromtimestamp(time.mktime(t_start)))
-# s = str(now.day)+"."+str(now.month)+"."+str(now.year)
-# s = str(now.day)+"."+str(now.month)+"."+str(now.year)
-# s = str(now.day)+"."+str(now.month)+"."+str(now.year)
+def format_by_type(text, t):
+    if t >= 10 and t <= 12: # пракитка
+        return "__" + text + "__" # italic
+    if t >= 20 and t <= 24: # лабораторная
+        return "`" + text + "`" # code
+    if t >= 50 and t <= 55: # экзамен
+        return "**" + text + "**" # bold
+    return text     # default
