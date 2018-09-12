@@ -12,7 +12,7 @@ import json
 import os
 import random
 from time import sleep
-from id import subject_full_name, subject_short_name, teacher_full_name, teacher_short_name
+from id import subject_full_name, subject_short_name, teacher_full_name, teacher_short_name, format_by_type
 from config import TOKEN, MY_ID, StatesGroup
 from groups import DATA
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
