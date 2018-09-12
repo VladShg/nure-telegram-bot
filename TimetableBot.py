@@ -285,7 +285,7 @@ async def process_info_command(msg: types.Message):
     s += "\n\n"
     s += "/random - разное из процесса разработки, пока что только 4 записи"
     s += "\n\n"
-    s += "Разметка:"
+    s += "Разметка: \n"
     s += format_by_type("Лекция", 0) + "\n"
     s += format_by_type("Практика", 11) + "\n"
     s += format_by_type("Лабораторная", 22) + "\n"
