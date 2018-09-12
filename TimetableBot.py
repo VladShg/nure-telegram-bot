@@ -114,7 +114,7 @@ async def timetable(id, num):
 
     for k in event_day:
         s = k
-        d = datetime.datetime.fromtimestamp(event_day[k][0]['start_time'])))
+        d = datetime.datetime.fromtimestamp(event_day[k][0]['start_time'])
         await bot.send_message(id, d)
         q = d.weekday()
         await bot.send_message(id, q)
