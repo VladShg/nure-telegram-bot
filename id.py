@@ -36,9 +36,11 @@ def teacher_short_name(obj,id):
 
 def format_by_type(text, t):
     if t >= 10 and t <= 12: # пракитка
-        return "<a href=\"https://goo.gl/5RDYGZ/\">" + text + "</a>" # italic
+        return "<a href=\"Не нужно сюда нажимать\">" + text + "</a>" # Ссылка
     if t >= 20 and t <= 24: # лабораторная
         return "<code>" + text + "</code>" # code
     if t >= 50 and t <= 55: # экзамен
         return "<b>" + text + "</b>" # bold
     return text     # default
+
+    # Не использовал italic, потому что при малом обьеме текста очень слабо заметно различия с лекцией
