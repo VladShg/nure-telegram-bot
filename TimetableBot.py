@@ -295,7 +295,7 @@ async def process_info_command(msg: types.Message):
     # s += "Автор не претендует на оригинальность или конкуренцию с более ранними приложениями"
     s += "\n\n"
     s += "Предложения, сбои в работе, новые записи в рандом: @VledSh"
-    await bot.send_message(msg.from_user.id, s, reply_markup=kb_additional)
+    await bot.send_message(msg.from_user.id, s, reply_markup=kb_additional, parse_mode="HTML")
 
 @dp.message_handler(regexp="\A(🔍)\Z")
 async def process_info_emoji_command(msg: types.Message):
