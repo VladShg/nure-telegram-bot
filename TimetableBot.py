@@ -280,8 +280,8 @@ async def process_dbf_command(message: types.Message):
             s += str(lst[n][0]) + " "
             s += lst[n][1] + " "
             s += lst[n][7].strftime("%d.%m.%Y %H:%M") + " "
-            s += lst[n][8] + " "
-            s += lst[n][10]
+            s += str(lst[n][8]) + " "
+            s += str(lst[n][10])
             if n % 10 == 0 and n != 0:
                 await bot.send_message(message.from_user.id, s)
             else:
