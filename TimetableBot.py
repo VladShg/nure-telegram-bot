@@ -275,7 +275,6 @@ async def process_dbf_command(message: types.Message):
         lst = c.fetchall()
         s = ""
         for n in range(len(lst)):
-            s += str(lst[n][0]) + " "
             s += lst[n][1] + " "
             H = lst[n][7].hour + 3
             s += lst[n][7].strftime("%d.%m {}:%M").format(str(H)) + " "
