@@ -417,10 +417,15 @@ async def alarm_command(msg: types.Message):
     with conn:
         c.execute("SELECT * FROM users")
         users = c.fetchall()
-        f = open('notification/update.png', 'rb')
         for u in users:
             if u[10] == 1:
-                await bot.send_photo(u[0], caption = s, reply_markup=kb_additional, photo=f)
+                try:
+                    f = open('notification/update.png', 'rb')
+                    await bot.send_photo(u[0], caption = s, reply_markup=kb_additional, photo=f)
+                    time.sleep(1)
+                except Exception as e: 
+                    await bot.send_message(MY_ID, str(e) + " " + u[1])
+                    time.sleep(1)
 
 @dp.message_handler(regexp="\A(1️⃣)\Z")
 async def process_timetable1_command(msg: types.Message):
