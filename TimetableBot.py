@@ -473,7 +473,7 @@ kb_additional.insert(btn_home)
 kb_additional.insert(btn_settings)
 
 if __name__ == '__main__':
-    db.ex()
+    # db.ex()
     fix_db()
     executor.start_polling(dp)
 

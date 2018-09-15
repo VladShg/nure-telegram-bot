@@ -8,7 +8,7 @@ def ex():
     conn = psycopg2.connect(DATABASE_URL, sslmode='require')
     c = conn.cursor()
 
-    c.execute("DROP TABLE users")
+    # c.execute("DROP TABLE users")
     c.execute("""CREATE TABLE users(
             id INTEGER  NOT NULL,
             name VARCHAR(50) NOT NULL,
@@ -27,5 +27,3 @@ def ex():
 
     conn.commit()
     conn.close()
-
-    print("inside ex function")
