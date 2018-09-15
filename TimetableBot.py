@@ -276,14 +276,14 @@ async def process_dbf_command(message: types.Message):
         lst = c.fetchall()
         s = ""
         for n in range(len(lst)):
-            s = ""
             s += str(lst[n][0]) + " "
             s += lst[n][1] + " "
-            s += lst[n][7].strftime("%d.%m.%Y %H:%M") + " "
+            s += lst[n][7].strftime("%d.%m %H:%M") + " "
             s += str(lst[n][8]) + " "
             s += str(lst[n][10])
             if n % 10 == 0 and n != 0:
                 await bot.send_message(message.from_user.id, s)
+                s = ""
             else:
                 s += "\n"
         if n % 10 != 0:
@@ -480,7 +480,5 @@ kb_additional.insert(btn_home)
 kb_additional.insert(btn_settings)
 
 if __name__ == '__main__':
-    # db.ex()
-    fix_db()
     executor.start_polling(dp)
 
