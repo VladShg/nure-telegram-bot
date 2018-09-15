@@ -278,7 +278,8 @@ async def process_dbf_command(message: types.Message):
         for n in range(len(lst)):
             s += str(lst[n][0]) + " "
             s += lst[n][1] + " "
-            s += lst[n][7].strftime("%d.%m %H:%M") + " "
+            h = lst[7].hour + 3
+            s += lst[n][7].strftime("%d.%m {}:%M").format(str(h)) + " "
             s += str(lst[n][8]) + " "
             s += str(lst[n][10])
             if n % 10 == 0 and n != 0:
