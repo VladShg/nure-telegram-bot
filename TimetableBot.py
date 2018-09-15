@@ -267,6 +267,29 @@ async def process_db_command(message: types.Message):
         if len(s) != 0:
             await bot.send_message(message.from_user.id, s)
 
+@dp.message_handler(commands=['dbf'])
+async def process_dbf_command(message: types.Message):
+    if message.from_user.id != MY_ID:
+        await bot.send_message
+    with conn:
+        c.execute("SELECT * FROM users")
+        lst = c.fetchall()
+        s = ""
+        for n in range(len(lst)):
+            s = ""
+            s += str(lst[n][0]) + " "
+            s += lst[n][1] + " "
+            s += lst[n][7].strftime("%d.%m.%Y %H:%M") + " "
+            s += lst[n][8] + " "
+            s += lst[n][10]
+            if n % 10 == 0 and n != 0:
+                await bot.send_message(message.from_user.id, s)
+            else:
+                s += "\n"
+        if n % 10 != 0:
+            await bot.send_message(message.from_user.id, s)
+        
+
 @dp.message_handler(commands=["tn"])
 async def teacher_name_change(msg: types.Message):
     boolChange(msg.from_user.id, "short_teacher")
@@ -291,22 +314,6 @@ async def pair_time_change(msg: types.Message):
 async def notify_change(msg: types.Message):
     boolChange(msg.from_user.id, "notify")
     await process_settings_command(msg)
-
-@dp.message_handler(commands=["json"])
-async def json_send_handler(msg: types.Message):
-    with conn:
-        c.execute("SELECT * FROM users")
-        users = c.fetchall()
-    tempList = list()
-    for n in range(len(users)):
-        tempList.append(users[n])
-        if n % 20 == 0 and n != 0:
-            await bot.send_message(msg.from_user.id, json.dumps(tempList))
-            tempList = list()
-    try:
-        await bot.send_message(msg.from_user.id, json.dumps(tempList))
-    except:
-        a = "s"
     
 # region do not enter
 
