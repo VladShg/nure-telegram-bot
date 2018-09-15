@@ -4,13 +4,17 @@ from aiogram.utils import executor
 from aiogram.types import ReplyKeyboardRemove, \
     ReplyKeyboardMarkup, KeyboardButton, \
     InlineKeyboardMarkup, InlineKeyboardButton
-import sqlite3
+import db
+import psycopg2
+import os
 import datetime
 import time
+import ast
 import urllib3
 import json
 import os
 import random
+from fuckingheroku import fix_db
 from time import sleep
 from id import subject_full_name, subject_short_name, weekday, \
                teacher_full_name, teacher_short_name, format_by_type
@@ -21,52 +25,74 @@ from aiogram.contrib.middlewares.logging import LoggingMiddleware
 
 def register(msg):
     with conn:
-        c.execute("SELECT * FROM users WHERE id=:id", {'id':msg.from_user.id})
-        i = datetime.datetime.now()
+        c.execute("SELECT * FROM users WHERE id={}".format(msg.from_user.id))
         if len(list(c.fetchall())) == 0:
-            c.execute("INSERT INTO users VALUES (:id, :name, 1, 1, :f_n, :g_n, -1, :date, :updates, :state)",
-             {'id':msg.from_user.id, 'name':msg.from_user.full_name, "updates": 1,
-             "date": "%s" % i, 'state': StatesGroup.S_NONE.value, 'f_n': "", "g_n": ""})
+            c.execute("INSERT INTO users(id, name, short_subj, short_teacher, faculty_name, group_name, group_id, last_update, updates, grp_state, notify, time_state, pair_state) VALUES ({}, {}, 1, 1, '', '', -1, CURRENT_TIMESTAMP , 1, {}, 1, 0, 0);".format(msg.from_user.id, \
+             "'" +msg.from_user.full_name + "'", StatesGroup.S_NONE.value))
         else:
-            c.execute("UPDATE users SET last_update=:date WHERE id=:id",{'id': msg.from_user.id, 'date': "%s" % i})
-            c.execute("SELECT * FROM users WHERE id=:id", {'id': msg.from_user.id})
+            c.execute("SELECT * FROM users WHERE id={}".format(msg.from_user.id))
             obj = c.fetchone()
             num = obj[8] + 1
-            c.execute("UPDATE users SET updates=:upd WHERE id=:id", {'id': msg.from_user.id, 'upd': num})
+            c.execute("UPDATE users SET last_update= CURRENT_TIMESTAMP, updates={}, name='{}' WHERE id={}".format(num, msg.from_user.full_name, msg.from_user.id))
+            c.execute("UPDATE users SET last_update= CURRENT_TIMESTAMP WHERE id={}".format(msg.from_user.id))
             
 def set_state(id, num):
     with conn:
-        c.execute("UPDATE users SET grp_state = :state WHERE id = :id", {'id': id, "state" : num})
+        c.execute("UPDATE users SET grp_state ={} WHERE id = {}".format(num, id))
 
 def get_state(id):
     with conn:
-        c.execute("SELECT * FROM users WHERE id = :id", {'id': id})
+        c.execute("SELECT * FROM users WHERE id = {}".format(id))
         obj = c.fetchone()
         return obj[9]
 
 def boolChange(id, key):
     with conn:
-        c.execute("SELECT * FROM users WHERE id=:id", {'id':id})
+        c.execute("SELECT * FROM users WHERE id={}".format(id))
         user = c.fetchone()
+        val = 0
         if key == "short_teacher":
             n = 3
-        else:
+            val = 1
+            if user[n] == 1:
+                val = 0
+        elif key == "short_subj":
             n = 2
-        val = 1
-        if user[n] == 1:
-            val = 0
-        c.execute("UPDATE users SET " + key + " = :val WHERE id=:id""", {'id':id, 'val':val})
+            val = 1
+            if user[n] == 1:
+                val = 0
+        elif key == "time_state":
+            n = 11
+            if user[n] == 0:
+                val = 1
+            if user[n] == 1:
+                val = 0
+        elif key == "pair_state":
+            n = 12
+            if user[n] == 0:
+                val = 1
+            if user[n] == 1:
+                val = 0
+        elif key == "notify":
+            n = 10
+            val = 1
+            if user[n] == 1:
+                val = 0
+        
+        c.execute("UPDATE users SET " + key + " ={} WHERE id={}""".format(val,id))
 
 async def timetable(id, num):
     short_t = 0
     short_s = 0
     group_id = 0
     with conn:
-        c.execute("SELECT * FROM users WHERE id = :id", {'id':id})
+        c.execute("SELECT * FROM users WHERE id = {}".format(id))
         user = c.fetchone()
         short_t = user[3]
         short_s = user[2]
         group_id = user[6]
+        pair_time = user[11]
+        pair_state = user[12]
         if user[6] == -1:
             await bot.send_message(id, "Не указана группа", reply_markup=kb_additional)
             return
@@ -120,7 +146,11 @@ async def timetable(id, num):
         for e in event_day[k]:
             s += '\n'
             # s += "[" + str(start[e['number_pair'] - 1]) + "-" + str(end[e['number_pair'] - 1]) + "] " + "[" + e['auditory'] + "] "
-            s += str(e['number_pair']) + ") "
+            
+            if pair_state == 1:
+                s += str(e['number_pair']) + ") "
+            if pair_time == 1:
+                s += str(start[e['number_pair'] - 1]) + "-" + str(end[e['number_pair'] - 1]) + " "
             a = subject_full_name(obj, e["subject_id"])
             if short_s == 1:
                 a = subject_short_name(obj, e["subject_id"])
@@ -140,7 +170,8 @@ bot = Bot(token=TOKEN)
 dp = Dispatcher(bot, storage=MemoryStorage())
 dp.middleware.setup(LoggingMiddleware())
 
-conn = sqlite3.connect('user.db')
+DATABASE_URL = os.environ['DATABASE_URL']
+conn = psycopg2.connect(DATABASE_URL, sslmode='require')
 c = conn.cursor()
 
 @dp.message_handler(commands=['gr'])
@@ -203,9 +234,11 @@ async def process_callback_enter_group(call: types.CallbackQuery):
     direction = faculty['directions'][data['d']]
     group = direction['groups'][data['g']]
     with conn:
-        c.execute("UPDATE users SET group_id = :upd, group_name = :g_n, faculty_name = :f_n WHERE id=:id",
-        {'upd': group['id'], 'id': call.message.chat.id, 'g_n': group['name'], 'f_n': faculty['full_name']})
-    await bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Изменения вступили в силу")        
+        c.execute("UPDATE users SET group_id = {}, group_name='{}', faculty_name ='{}' WHERE id={}".format(group['id'], \
+        group['name'], faculty['full_name'], call.message.chat.id))
+    await bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, \
+     text="Факультет: {}\nСпециальность: {}\nГруппа: {}".format(faculty['full_name'], direction['full_name'], group['name']))
+    await bot.send_message(call.message.chat.id, "Изменения вступили в силу", reply_markup=kb_additional)        
 
 @dp.callback_query_handler()
 async def process_callback_button1(call: types.CallbackQuery):
@@ -216,7 +249,6 @@ async def process_callback_button1(call: types.CallbackQuery):
 async def process_start_command(message: types.Message):
     register(message)
     set_state(message.from_user.id, StatesGroup.S_NONE.value)
-    #if message.from_user.id == MY_ID:
     await bot.send_message(message.from_user.id, "Расписание\n\n1️⃣ — На 1 день\n7️⃣ — На 7 дней\n🔢 — На 30 дней\n\n 🏠 — Стартовая страница /start\n ⚙️ — Настройки /settings", reply_markup=kb_start)
 
 @dp.message_handler(commands=['db'])
@@ -224,8 +256,16 @@ async def process_db_command(message: types.Message):
     with conn:
         c.execute("SELECT * FROM users")
         lst = c.fetchall()
-        for data in lst:
-            await bot.send_message(message.from_user.id, data)
+        s = ""
+        for n in range(len(lst)):
+            if len(s) != 0:
+                s += "\n"
+            s += str(lst[n])
+            if n % 5 == 0 :
+                await bot.send_message(message.from_user.id, s)
+                s = ""
+        if len(s) != 0:
+            await bot.send_message(message.from_user.id, s)
 
 @dp.message_handler(commands=["tn"])
 async def teacher_name_change(msg: types.Message):
@@ -237,15 +277,60 @@ async def subject_name_change(msg: types.Message):
     boolChange(msg.from_user.id, "short_subj")
     await process_settings_command(msg)
 
-@dp.message_handler(commands=["random"])
-async def process_random_handler(message: types.Message):
-    files = list()
-    for f in os.listdir("random/"):
-        files.append(f.split(".")[0])
-    i = random.randrange(len(files))
-    f = open('random/'+files[i]+".png", 'rb')
-    await bot.send_photo(message.from_user.id, caption = files[i], reply_markup=kb_additional,
-                    photo=f)
+@dp.message_handler(commands=["pn"])
+async def pair_number_change(msg: types.Message):
+    boolChange(msg.from_user.id, "pair_state")
+    await process_settings_command(msg)
+
+@dp.message_handler(commands=["pt"])
+async def pair_time_change(msg: types.Message):
+    boolChange(msg.from_user.id, "time_state")
+    await process_settings_command(msg)
+
+@dp.message_handler(commands=["nt"])
+async def notify_change(msg: types.Message):
+    boolChange(msg.from_user.id, "notify")
+    await process_settings_command(msg)
+
+@dp.message_handler(commands=["json"])
+async def json_send_handler(msg: types.Message):
+    with conn:
+        c.execute("SELECT * FROM users")
+        users = c.fetchall()
+    tempList = list()
+    for n in range(len(users)):
+        tempList.append(users[n])
+        if n % 20 == 0 and n != 0:
+            await bot.send_message(msg.from_user.id, json.dumps(tempList))
+            tempList = list()
+    try:
+        await bot.send_message(msg.from_user.id, json.dumps(tempList))
+    except:
+        a = "s"
+    
+# region do not enter
+
+# @dp.message_handler(commands=["random"])
+# async def process_random_handler(message: types.Message):
+#     files = list()
+#     for f in os.listdir("random/"):
+#         files.append(f.split(".")[0])
+#     i = random.randrange(len(files))
+#     f = open('random/'+files[i]+".png", 'rb')
+#     await bot.send_photo(message.from_user.id, caption = files[i], reply_markup=kb_additional,
+#                     photo=f)
+
+# @dp.message_handler(commands=["lazyrandom"])
+# async def process_lazyrandom_handler(message: types.Message):
+#     files = list()
+#     for f in os.listdir("random/"):
+#         files.append(f.split(".")[0])
+#     for f in files:
+#         fl = open('random/'+ f +".png", 'rb')
+#         await bot.send_photo(message.from_user.id, caption = f, reply_markup=kb_additional,
+#                     photo=fl)
+
+# endregion
 
 @dp.message_handler(regexp="\A(⚙️)\Z")
 async def process_emoji_settings_command(msg: types.Message):
@@ -255,7 +340,7 @@ async def process_emoji_settings_command(msg: types.Message):
 async def process_settings_command(msg: types.Message):
     set_state(msg.from_user.id, StatesGroup.S_NONE.value)
     with conn:
-            c.execute("SELECT * FROM users WHERE id=:id", {'id':msg.from_user.id})
+            c.execute("SELECT * FROM users WHERE id={}".format(msg.from_user.id))
             user = c.fetchone()
 
             group = "Не указано"
@@ -269,28 +354,41 @@ async def process_settings_command(msg: types.Message):
             full_t = "✅"
             if user[3] == 1:
                 full_t = "❌"
+
+            notify = "❌"
+            if user[10] == 1:
+                notify = "✅"
+
+            pair_num = "❌"
+            if user[12] == 1:
+                pair_num = "✅"
+
+            pair_time = "❌"
+            if user[11] == 1:
+                pair_time = "✅"
+
             string = "Настройки\n\n"
             string += "Группа: {} /gr\n".format(group)
             string += "Полные имена предметов: {} /sn\n".format(full_s)
             string += "Полные имена преподавателей: {} /tn\n".format(full_t)
+            string += "Номер пары: {} /pn\n".format(pair_num)
+            string += "Время пары: {} /pt\n".format(pair_time)
+            string += "Сообщения: {} /nt\n".format(notify)
             string += "\n "
             string += "🔍 Справка /help"
-            string += "\n"
-            string += "💙 /random "
+            # string += "\n"
+            # string += "💙 /random "
 
-            #if msg.from_user.id == MY_ID:
             await bot.send_message(msg.from_user.id, string, reply_markup=kb_settings)
 
 @dp.message_handler(commands=['help'])
 async def process_info_command(msg: types.Message):
     set_state(msg.from_user.id, StatesGroup.S_NONE.value)
-    s = "Расписание на день работает выдачей записей до конца дня. "
-    s += "Если время вызова позднее 18:15, команда обработает записи на завтра. "
-    s += "Для недели и месяца аналогично"
-    s += "\n\n"
-    s += "/random - разное из процесса разработки, пока что только 4 записи"
-    s += "\n\n"
-    s += "Разметка: \n"
+    # s = "/random - разное из процесса разработки, пока что только 4 записи"
+    # s += "\n"
+    # s += "/lazyrandom - для ленивых"
+    # s += "\n\n"
+    s = "Разметка: \n"
     s += format_by_type("Лекция", 0) + "\n"
     s += format_by_type("Практика", 11) + "\n"
     s += format_by_type("Лабораторная", 22) + "\n"
@@ -305,6 +403,24 @@ async def process_info_command(msg: types.Message):
 @dp.message_handler(regexp="\A(🔍)\Z")
 async def process_info_emoji_command(msg: types.Message):
     await process_info_command(msg)
+
+@dp.message_handler(regexp="\A(/alarm)")
+async def alarm_command(msg: types.Message):
+    s = msg.text[6:]
+    s += "\n\nОтключить сообщения: /nt"
+    if msg.from_user.id != MY_ID:
+        await bot.send_message(msg.from_user.id, "Нужны права администратора", reply_markup=kb_additional)
+        return
+    if len(msg.text) <= 7:
+        await bot.send_message(msg.from_user.id, "Пустое сообщение", reply_markup=kb_additional)
+        return
+    with conn:
+        c.execute("SELECT * FROM users")
+        users = c.fetchall()
+        f = open('notification/update.png', 'rb')
+        for u in users:
+            if u[10] == 1:
+                await bot.send_photo(u[0], caption = s, reply_markup=kb_additional, photo=f)
 
 @dp.message_handler(regexp="\A(1️⃣)\Z")
 async def process_timetable1_command(msg: types.Message):
@@ -352,4 +468,7 @@ kb_additional.insert(btn_home)
 kb_additional.insert(btn_settings)
 
 if __name__ == '__main__':
+    db.ex()
+    fix_db()
     executor.start_polling(dp)
+
