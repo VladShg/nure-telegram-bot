@@ -14,7 +14,7 @@ import urllib3
 import json
 import os
 import random
-# from fuckingheroku import fix_db
+from fuckingheroku import fix_db
 from time import sleep
 from id import subject_full_name, subject_short_name, weekday, \
                teacher_full_name, teacher_short_name, format_by_type
@@ -468,8 +468,7 @@ kb_additional.insert(btn_home)
 kb_additional.insert(btn_settings)
 
 if __name__ == '__main__':
-    db.ex()
-    # fix_db()
-    print("inside aaaa")
+    # db.ex()
+    fix_db()
     executor.start_polling(dp)
 

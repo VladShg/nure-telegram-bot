@@ -27,5 +27,3 @@ def ex():
 
     conn.commit()
     conn.close()
-
-    print("inside ex function")
