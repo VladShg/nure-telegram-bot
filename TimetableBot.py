@@ -470,6 +470,6 @@ kb_additional.insert(btn_settings)
 if __name__ == '__main__':
     db.ex()
     fix_db()
-    print("inside aaa")
+    print("inside aaaa")
     executor.start_polling(dp)
 
