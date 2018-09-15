@@ -14,7 +14,6 @@ import urllib3
 import json
 import os
 import random
-from fuckingheroku import fix_db
 from time import sleep
 from id import subject_full_name, subject_short_name, weekday, \
                teacher_full_name, teacher_short_name, format_by_type
@@ -278,7 +277,7 @@ async def process_dbf_command(message: types.Message):
         for n in range(len(lst)):
             s += str(lst[n][0]) + " "
             s += lst[n][1] + " "
-            H = lst[7].hour + 3
+            H = lst[n][7].hour + 3
             s += lst[n][7].strftime("%d.%m {}:%M").format(str(H)) + " "
             s += str(lst[n][8]) + " "
             s += str(lst[n][10])
