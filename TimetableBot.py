@@ -484,11 +484,6 @@ kb_additional.insert(btn_home)
 kb_additional.insert(btn_settings)
 
 if __name__ == '__main__':
-    with conn:
-        c.execute("SELECT * FROM users")
-        objs = c.fetchall()
-        for o in objs:
-            c.execute("UPDATE users SET updates=1 WHERE id={}".format(o[0]))
     executor.start_polling(dp)
 
 
