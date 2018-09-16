@@ -272,7 +272,7 @@ async def process_dbf_command(message: types.Message):
         await bot.send_message
     with conn:
         c.execute("SELECT * FROM users")
-        lst = c.fetchall()
+        lst = sorted(c.fetchall(), key=lambda tup: tup[7])
         s = ""
         for n in range(len(lst)):
             s += lst[n][1] + " "
