@@ -28,12 +28,12 @@ def register(msg):
         if len(list(c.fetchall())) == 0:
             c.execute("INSERT INTO users(id, name, short_subj, short_teacher, faculty_name, group_name, group_id, last_update, updates, grp_state, notify, time_state, pair_state) VALUES ({}, {}, 1, 1, '', '', -1, CURRENT_TIMESTAMP , 1, {}, 1, 0, 0);".format(msg.from_user.id, \
              "'" +msg.from_user.full_name + "'", StatesGroup.S_NONE.value))
-        else:
-            c.execute("SELECT * FROM users WHERE id={}".format(msg.from_user.id))
-            obj = c.fetchone()
-            num = obj[8] + 1
-            c.execute("UPDATE users SET last_update= CURRENT_TIMESTAMP, updates={}, name='{}' WHERE id={}".format(num, msg.from_user.full_name, msg.from_user.id))
-            c.execute("UPDATE users SET last_update= CURRENT_TIMESTAMP WHERE id={}".format(msg.from_user.id))
+
+def update(msg):
+    c.execute("SELECT * FROM users WHERE id={}".format(msg.from_user.id))
+    obj = c.fetchone()
+    num = obj[8] + 1
+    c.execute("UPDATE users SET last_update= CURRENT_TIMESTAMP, updates={}, name='{}' WHERE id={}".format(num, msg.from_user.full_name, msg.from_user.id))
             
 def set_state(id, num):
     with conn:
@@ -435,14 +435,17 @@ async def alarm_command(msg: types.Message):
 
 @dp.message_handler(regexp="\A(1️⃣)\Z")
 async def process_timetable1_command(msg: types.Message):
+    update(msg)
     await timetable(msg.from_user.id, 1)
 
 @dp.message_handler(regexp="\A(7️⃣)\Z")
 async def process_timetable7_command(msg: types.Message):
+    update(msg)    
     await timetable(msg.from_user.id, 7)
 
 @dp.message_handler(regexp="\A(🔢)\Z")
 async def process_timetable30_command(msg: types.Message):
+    update(msg)
     await timetable(msg.from_user.id, 30)
 
 @dp.message_handler()
