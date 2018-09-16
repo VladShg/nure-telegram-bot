@@ -247,6 +247,7 @@ async def process_callback_button1(call: types.CallbackQuery):
 @dp.message_handler(commands=['start'])
 async def process_start_command(message: types.Message):
     register(message)
+    update(message)
     set_state(message.from_user.id, StatesGroup.S_NONE.value)
     await bot.send_message(message.from_user.id, "Расписание\n\n1️⃣ — На 1 день\n7️⃣ — На 7 дней\n🔢 — На 30 дней\n\n 🏠 — Стартовая страница /start\n ⚙️ — Настройки /settings", reply_markup=kb_start)
 
@@ -344,6 +345,7 @@ async def process_emoji_settings_command(msg: types.Message):
 
 @dp.message_handler(commands=['settings'])
 async def process_settings_command(msg: types.Message):
+    update(msg)
     set_state(msg.from_user.id, StatesGroup.S_NONE.value)
     with conn:
             c.execute("SELECT * FROM users WHERE id={}".format(msg.from_user.id))
@@ -483,4 +485,10 @@ kb_additional.insert(btn_settings)
 
 if __name__ == '__main__':
     executor.start_polling(dp)
+
+with conn:
+    c.execute("SELECT * FROM users")
+    objs = c.fetchall()
+    for o in objs:
+        c.execute("UPDATE users SET updates=1 WHERE id={}".format(o[0]))
 
