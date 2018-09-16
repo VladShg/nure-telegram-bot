@@ -119,7 +119,7 @@ async def timetable(id, num):
     try:
         obj = json.loads(r.data.decode('cp1251'))
     except:
-        await bot.send_message(id, "Пар не найдено", reply_markup=kb_additional)
+        await bot.send_message(id, "Пар не найдено", reply_markup=kb_start)
         return
         
     event_day = dict()
@@ -135,7 +135,7 @@ async def timetable(id, num):
             event_day[key].append(event)
 
     if len(event_day) == 0:
-        print("Пар не найдено")
+        await bot.send_message(id, "Пар не найдено", reply_markup=kb_start)
         return
 
     for k in event_day:
@@ -162,7 +162,7 @@ async def timetable(id, num):
                     a = teacher_short_name(obj, e['teachers'][0])
                 s += a
                 
-        await bot.send_message(id, s, reply_markup=kb_additional, parse_mode="HTML")
+        await bot.send_message(id, s, reply_markup=kb_start, parse_mode="HTML")
         time.sleep(0.3)
 
 bot = Bot(token=TOKEN)
