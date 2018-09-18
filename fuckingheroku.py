@@ -50,15 +50,3 @@ def fix_db():
             if len(list(c.fetchall())) == 0:
                 c.execute("INSERT INTO users(id, name, short_subj, short_teacher, faculty_name, group_name, group_id, last_update, updates, grp_state, notify, time_state, pair_state) VALUES ({}, {}, 1, 1, '{}', '{}', {}, CURRENT_TIMESTAMP , 1, {}, 1, 0, 0);".format(item[0], \
                  "'" + item[1] + "'", item[4], item[5], item[6], StatesGroup.S_NONE.value))
-
-
-a = 1
-
-
-
-with conn:
-    c.execute("SELECT * FROM users")
-    s = ""
-    lst = c.fetchall()
-    for n in range(len(lst)):
-        print(lst[n])
