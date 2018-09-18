@@ -720,13 +720,9 @@ def pr2_updt():
         time.sleep(1)
 
 if __name__ == "__main__":
-    try:
-        db.create_cache()
-    except:
-        a=0
     
-    schedule.every().day.at("21:35").do(update_data)
-
+    print(datetime.datetime.now().strftime("%H:%M:%S"))
+    schedule.every().day.at("21:50").do(update_data)
 
     proc1 = Process(target=pr1_poll)
     proc2 = Process(target=pr2_updt)
