@@ -722,7 +722,7 @@ def pr2_updt():
 if __name__ == "__main__":
     
     print(datetime.datetime.now().strftime("%H:%M:%S"))
-    schedule.every().day.at("18:47").do(update_data)
+    schedule.every().day.at("18:49").do(update_data)
 
     proc1 = Process(target=pr1_poll)
     proc2 = Process(target=pr2_updt)
