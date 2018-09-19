@@ -619,7 +619,7 @@ async def process_timetable_custom_command(msg: types.Message):
                         group, Json(obj['events']), Json(obj['teachers']), Json(obj['subjects']),
                         Json(obj['types']), url))
                 events = obj['events']
-                teachers = obj['teacherss']
+                teachers = obj['teachers']
                 subjects = obj['subjects']
                 typs = obj['types']
             else:
