@@ -391,6 +391,9 @@ async def process_start_command(message: types.Message):
 
 @dp.message_handler(commands=['db'])
 async def process_db_command(message: types.Message):
+    if message.from_user.id != MY_ID:
+        await bot.send_message(message.from_user.id, "sosi hui")
+        return
     connection()    
     with conn:
         c.execute("SELECT * FROM users")
@@ -409,7 +412,8 @@ async def process_db_command(message: types.Message):
 @dp.message_handler(commands=['dbf'])
 async def process_dbf_command(message: types.Message):
     if message.from_user.id != MY_ID:
-        await bot.send_message
+        await bot.send_message(message.from_user.id, "sosi hui")
+        return
     with conn:
         c.execute("SELECT * FROM users")
         lst = sorted(c.fetchall(), key=lambda tup: tup[7])
@@ -555,9 +559,9 @@ async def process_info_command(msg: types.Message):
 async def process_info_emoji_command(msg: types.Message):
     await process_info_command(msg)
 
-@dp.message_handler(regexp="\A(/alarm)")
+@dp.message_handler(regexp="\A(/alarmi)")
 async def alarm_command(msg: types.Message):
-    s = msg.text[6:]
+    s = msg.text[7:]
     s += "\n\nОтключить сообщения: /nt"
     if msg.from_user.id != MY_ID:
         await bot.send_message(msg.from_user.id, "Нужны права администратора", reply_markup=kb_additional)
