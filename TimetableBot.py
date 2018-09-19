@@ -428,6 +428,9 @@ async def process_dbf_command(message: types.Message):
         if n % 10 != 0:
             await bot.send_message(message.from_user.id, s)
         
+@dp.message_handler(commands=['update'])
+async def process_update_command(message: types.Message):
+    update_data()
 
 @dp.message_handler(commands=["tn"])
 async def teacher_name_change(msg: types.Message):
@@ -721,7 +724,6 @@ def pr2_updt():
 
 if __name__ == "__main__":
     
-    print(datetime.datetime.now().strftime("%H:%M:%S"))
     schedule.every().day.at("2:30").do(update_data)
 
     proc1 = Process(target=pr1_poll)
