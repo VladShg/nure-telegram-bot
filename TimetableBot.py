@@ -303,7 +303,7 @@ async def process_callback_enter_group(call: types.CallbackQuery):
      text="Факультет: {}\nСпециальность: {}\nГруппа: {}".format(faculty['full_name'], direction['full_name'], group['name']))
     await bot.send_message(call.message.chat.id, "Изменения вступили в силу", reply_markup=kb_start)        
 
-@dp.callback_query_handler()
+@dp.callback_query_handler(func=lambda message: get_state(message.message.chat.id) == StatesGroup.S_NONE.value)
 async def process_callback_timetable_swift(call: types.CallbackQuery):
         connection()
 
