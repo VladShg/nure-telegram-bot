@@ -63,7 +63,6 @@ def register(msg):
             obj = c.fetchone()
             num = obj[8] + 1
             c.execute("UPDATE users SET last_update= CURRENT_TIMESTAMP, updates={}, name='{}' WHERE id={}".format(num, msg.from_user.full_name, msg.from_user.id))
-            c.execute("UPDATE users SET last_update= CURRENT_TIMESTAMP WHERE id={}".format(msg.from_user.id))
             
 def update(msg):
     connection()
@@ -385,7 +384,6 @@ async def process_callback_timetable_swift(call: types.CallbackQuery):
 @dp.message_handler(commands=['start'])
 async def process_start_command(message: types.Message):
     register(message)
-    update(message)
     set_state(message.from_user.id, StatesGroup.S_NONE.value)
     await bot.send_message(message.from_user.id, "Расписание\n\n🔀 — На день\n1️⃣ — На 1 день\n7️⃣ — На 7 дней\n🔢 — На 30 дней\n\n 🏠 — Стартовая страница /start\n ⚙️ — Настройки /settings", reply_markup=kb_start)
 
@@ -491,7 +489,7 @@ async def process_emoji_settings_command(msg: types.Message):
 
 @dp.message_handler(commands=['settings'])
 async def process_settings_command(msg: types.Message):
-    update(msg)
+    register(msg)
     set_state(msg.from_user.id, StatesGroup.S_NONE.value)
     connection()
     with conn:
@@ -585,7 +583,7 @@ async def alarm_command(msg: types.Message):
 @dp.message_handler(regexp="\A(🔀)\Z")
 async def process_timetable_custom_command(msg: types.Message):
         connection()        
-        update(msg)
+        register(msg)
         
         set_state(msg.from_user.id, StatesGroup.S_NONE.value)
         shift = 0
@@ -674,17 +672,17 @@ async def process_timetable_custom_command(msg: types.Message):
 
 @dp.message_handler(regexp="\A(1️⃣)\Z")
 async def process_timetable1_command(msg: types.Message):
-    update(msg)    
+    register(msg)    
     await timetable(msg.from_user.id, 1)
     
 @dp.message_handler(regexp="\A(7️⃣)\Z")
 async def process_timetable7_command(msg: types.Message):
-    update(msg)
+    register(msg)
     await timetable(msg.from_user.id, 7)
 
 @dp.message_handler(regexp="\A(🔢)\Z")
 async def process_timetable30_command(msg: types.Message):
-    update(msg)
+    register(msg)
     await timetable(msg.from_user.id, 30)
 
 @dp.message_handler()
