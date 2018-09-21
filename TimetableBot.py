@@ -306,7 +306,6 @@ async def process_callback_enter_group(call: types.CallbackQuery):
 @dp.callback_query_handler(func=lambda message: get_state(message.message.chat.id) == StatesGroup.S_NONE.value)
 async def process_callback_timetable_swift(call: types.CallbackQuery):
         connection()
-        update(msg) 
 
         set_state(call.message.chat.id, StatesGroup.S_NONE.value)
 
