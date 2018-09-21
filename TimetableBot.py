@@ -306,6 +306,7 @@ async def process_callback_enter_group(call: types.CallbackQuery):
 @dp.callback_query_handler(func=lambda message: get_state(message.message.chat.id) == StatesGroup.S_NONE.value)
 async def process_callback_timetable_swift(call: types.CallbackQuery):
         connection()
+        update(msg) 
 
         set_state(call.message.chat.id, StatesGroup.S_NONE.value)
 
@@ -583,7 +584,10 @@ async def alarm_command(msg: types.Message):
                     time.sleep(1)
                 
 @dp.message_handler(regexp="\A(🔀)\Z")
-async def process_timetable_custom_command(msg: types.Message): 
+async def process_timetable_custom_command(msg: types.Message):
+        connection()        
+        update(msg)
+        
         set_state(msg.from_user.id, StatesGroup.S_NONE.value)
         shift = 0
         kb_navigate = InlineKeyboardMarkup(row_width=3)
