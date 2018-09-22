@@ -17,8 +17,8 @@ import urllib3
 import json
 import os
 import random
-from fuckingheroku import fix_db
 from time import sleep
+from timeObj import TIME
 import id
 from id import subject_full_name, subject_short_name, weekday, \
                teacher_full_name, teacher_short_name, format_by_type
@@ -610,8 +610,6 @@ async def process_timetable_custom_command(msg: types.Message):
                 await bot.send_message(msg.from_user.id, "Не указана группа", reply_markup=kb_start)
                 return
 
-        s_start = datetime.datetime.now()
-
         with conn:
             c.execute("SELECT * FROM cache WHERE name='{}'".format(group))
             result = c.fetchall()
@@ -631,7 +629,7 @@ async def process_timetable_custom_command(msg: types.Message):
                 events = result[0][2]
                 teachers = result[0][3]
                 subjects = result[0][4]
-                typs = result[0][5]
+                typs = result[0][5]        
 
         event_day = list()
 
@@ -641,7 +639,7 @@ async def process_timetable_custom_command(msg: types.Message):
             key = t.strftime("%d.%m.%Y")
             if key == todayKey:
                 event_day.append(e)
-        
+
         start = ['7:45', "9:30", "11:15", "13:10", "14:55", "16:40"]
         end = ['9:20', "11:05", "12:50", "14:45", "16:30", "18:15"]
 
@@ -649,6 +647,23 @@ async def process_timetable_custom_command(msg: types.Message):
             d = datetime.datetime.now()
             s = d.strftime("%d.%m.%Y") + " " + weekday(d.weekday())
             await bot.send_message(msg.from_user.id, s+ "\n\nПар не найдено", reply_markup=kb_navigate)
+            return
+
+        timer = ""
+        now = datetime.datetime.now() + datetime.timedelta(hours=3)
+        if now.day == datetime.datetime.strptime(todayKey, "%d.%m.%Y").day:
+            if now > TIME['end'][event_day[-1][['number_pair']]]:
+                timer = "Пары закончились, можно чилить"
+            else:
+                timer += "\n\n"
+                for e in event_day:
+                    if now > TIME['start'][e['number_pair']] and now < TIME['end'][e['number_pair']]:
+                        time = TIME['end'][e['number_pair']] - now()
+                        timer = "До конца пары: " + time.strftime("%H:%M:%S")
+                        break
+                    if now < TIME['start'][e['number_pair']]:
+                        time = TIME['start'][e['number_pair']] - now()
+                        timer = "До начала пары: " + time.strftime("%H:%M:%S")
 
         s = todayKey + " " + weekday(datetime.datetime.now().weekday())  + "\n"
         for e in event_day:
@@ -668,6 +683,8 @@ async def process_timetable_custom_command(msg: types.Message):
                 if short_t == 1:
                     a = teacher_short_name(teachers, e['teachers'][0])
                 s += a
+
+        s += timer
         await bot.send_message(msg.from_user.id, s, parse_mode="HTML", reply_markup=kb_navigate)
 
 @dp.message_handler(regexp="\A(1️⃣)\Z")
