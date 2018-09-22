@@ -392,6 +392,9 @@ async def process_callback_timetable_swift(call: types.CallbackQuery):
                 if short_t == 1:
                     a = teacher_short_name(teachers, e['teachers'][0])
                 s += a
+
+        s += timer
+
         try:
             await bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=s, parse_mode="HTML", reply_markup=kb_navigate)
             await bot.answer_callback_query(callback_query_id=call.id)
