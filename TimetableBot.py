@@ -365,21 +365,21 @@ async def process_callback_timetable_swift(call: types.CallbackQuery):
                     h = (24 - s_start.hour - 4) + start.hour
                     m = (60 - s_start.minute) + start.minute
                     timer += str(datetime.timedelta(days=shift, hours=h, minutes=m))
-                    print("if 2")
             else:
-                if now > TIME['end'][n-1]:
+                if shift < 0:
                     timer += "Пары закончились, можно чилить"
-                    print("if 3")
                 else:
-                    print("if 4")
-                    for e in event_day:
-                        if now > TIME['start'][e['number_pair']-1] and now < TIME['end'][e['number_pair']-1]:
-                            time = TIME['end'][e['number_pair']-1] - now()
-                            timer += "До конца пары: " + time.strftime("%H:%M:%S")
-                            break
-                        if now < TIME['start'][e['number_pair']-1]:
-                            time = TIME['start'][e['number_pair'-1]] - now()
-                            timer += "До начала пары: "
+                    if now > TIME['end'][n-1]:
+                        timer += "Пары закончились, можно чилить"
+                    else:
+                        for e in event_day:
+                            if now > TIME['start'][e['number_pair']-1] and now < TIME['end'][e['number_pair']-1]:
+                                time = TIME['end'][e['number_pair']-1] - now()
+                                timer += "До конца пары: " + time.strftime("%H:%M:%S")
+                                break
+                            if now < TIME['start'][e['number_pair']-1]:
+                                time = TIME['start'][e['number_pair']-1] - now()
+                                timer += "До начала пары: "
         
         start = ['7:45', "9:30", "11:15", "13:10", "14:55", "16:40"]
         end = ['9:20', "11:05", "12:50", "14:45", "16:30", "18:15"]
