@@ -653,7 +653,7 @@ async def process_timetable_custom_command(msg: types.Message):
         now = datetime.datetime.now() + datetime.timedelta(hours=3)
         if now.day == datetime.datetime.strptime(todayKey, "%d.%m.%Y").day:
             n = event_day[len(event_day) - 1]['number_pair']
-            if now > TIME['end'[n-1]]:
+            if now > TIME['end'][n-1]]:
                 timer = "Пары закончились, можно чилить"
             else:
                 timer += "\n\n"
