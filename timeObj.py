@@ -16,7 +16,6 @@ pairEnd = pairStart + datetime.timedelta(hours=1) + datetime.timedelta(minutes=3
 start.append(pairStart)
 end.append(pairEnd)
 
-print(pairStart.strftime("%H:%M:%S") + " " + pairEnd.strftime("%H:%M:%S"))
 
 for i in range(1,6):
     m = 10
