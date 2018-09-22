@@ -653,17 +653,17 @@ async def process_timetable_custom_command(msg: types.Message):
         now = datetime.datetime.now() + datetime.timedelta(hours=3)
         if now.day == datetime.datetime.strptime(todayKey, "%d.%m.%Y").day:
             n = event_day[len(event_day) - 1]['number_pair']
-            if now > TIME['end'[n]]:
+            if now > TIME['end'[n-1]]:
                 timer = "Пары закончились, можно чилить"
             else:
                 timer += "\n\n"
                 for e in event_day:
-                    if now > TIME['start'][e['number_pair']] and now < TIME['end'][e['number_pair']]:
-                        time = TIME['end'][e['number_pair']] - now()
+                    if now > TIME['start'][e['number_pair']-1] and now < TIME['end'][e['number_pair']-1]:
+                        time = TIME['end'][e['number_pair']-1] - now()
                         timer = "До конца пары: " + time.strftime("%H:%M:%S")
                         break
-                    if now < TIME['start'][e['number_pair']]:
-                        time = TIME['start'][e['number_pair']] - now()
+                    if now < TIME['start'][e['number_pair']-1]:
+                        time = TIME['start'][e['number_pair'-1]] - now()
                         timer = "До начала пары: " + time.strftime("%H:%M:%S")
 
         s = todayKey + " " + weekday(datetime.datetime.now().weekday())  + "\n"
