@@ -22,7 +22,6 @@ def timeObj():
         pairEnd = pairStart + datetime.timedelta(hours=1) + datetime.timedelta(minutes=35)
         start.append(pairStart)
         end.append(pairEnd)
-        print(pairStart.strftime("%H:%M:%S") + " " + pairEnd.strftime("%H:%M:%S"))
 
     TIME = dict()
     TIME['start'] = start
