@@ -614,7 +614,7 @@ async def alarm_command(msg: types.Message):
                     time.sleep(1)
 
 @dp.message_handler(regexp="\A(/sendm)")
-async def process_start_command(message: types.Message):
+async def process_sendm_command(message: types.Message):
     id = int(message.text[7:16])
     msg = message.text[18:]
     await bot.send_message(MY_ID, id + " " + msg)
