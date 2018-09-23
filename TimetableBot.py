@@ -590,7 +590,7 @@ async def process_info_command(msg: types.Message):
 async def process_info_emoji_command(msg: types.Message):
     await process_info_command(msg)
 
-@dp.message_handler(regexp="\A(/alarmi)")
+@dp.message_handler(regexp="\A(/alarm)")
 async def alarm_command(msg: types.Message):
     s = msg.text[7:]
     s += "\n\nОтключить сообщения: /nt"
@@ -612,7 +612,13 @@ async def alarm_command(msg: types.Message):
                 except Exception as e: 
                     await bot.send_message(MY_ID, str(e) + " " + u[1])
                     time.sleep(1)
-                
+
+@dp.message_handler(regexp="\A(/sendm)")
+async def process_start_command(message: types.Message):
+    id = int(message.text[7:16])
+    msg = message.text[18:]
+    await bot.send_message(MY_ID, id + " " + msg)
+
 @dp.message_handler(regexp="\A(🔀)\Z")
 async def process_timetable_custom_command(msg: types.Message):
         connection()        
