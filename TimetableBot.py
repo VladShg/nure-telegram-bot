@@ -619,7 +619,7 @@ async def process_sendm_command(message: types.Message):
     msg = message.text[19:]
     try:
         await bot.send_message(str(id), msg)
-    except e as Exception:
+    except Exception as e:
         await bot.send_message(MY_ID, str(e))
 
 @dp.message_handler(regexp="\A(🔀)\Z")
