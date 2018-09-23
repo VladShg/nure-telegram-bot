@@ -365,7 +365,7 @@ async def process_callback_timetable_swift(call: types.CallbackQuery):
                     h = (24 - s_start.hour - 4) + start.hour
                     m = (60 - s_start.minute) + start.minute
                     s = (60 - s_start.second)
-                    dlt = datetime.timedelta(days=shift, hours=h, minutes=m, seconds=s)
+                    dlt = datetime.timedelta(days=shift - 1, hours=h, minutes=m, seconds=s)
                     timer += "До начала пар: " + str(dlt)
                     print(dlt.days)
 
