@@ -616,7 +616,7 @@ async def alarm_command(msg: types.Message):
 @dp.message_handler(regexp="\A(/sendm)")
 async def process_sendm_command(message: types.Message):
     id = int(message.text[7:16])
-    msg = message.text[19:]
+    msg = message.text[17:]
     try:
         await bot.send_message(str(id), msg)
     except Exception as e:
