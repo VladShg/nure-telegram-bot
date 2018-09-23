@@ -617,7 +617,7 @@ async def alarm_command(msg: types.Message):
 async def process_sendm_command(message: types.Message):
     id = int(message.text[7:16])
     msg = message.text[18:]
-    await bot.send_message(MY_ID, id + " " + msg)
+    await bot.send_message(MY_ID, str(id) + " " + msg)
 
 @dp.message_handler(regexp="\A(🔀)\Z")
 async def process_timetable_custom_command(msg: types.Message):
