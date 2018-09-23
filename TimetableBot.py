@@ -18,7 +18,7 @@ import json
 import os
 import random
 from time import sleep
-from timeObj import TIME
+from timeObj import timeObj
 import id
 from id import subject_full_name, subject_short_name, weekday, \
                teacher_full_name, teacher_short_name, format_by_type
@@ -356,6 +356,7 @@ async def process_callback_timetable_swift(call: types.CallbackQuery):
 
         timer = ""
         now = s_start + datetime.timedelta(hours=3)
+        TIME = timeObj()
         if now.day >= datetime.datetime.strptime(todayKey, "%d.%m.%Y").day:
             n = event_day[len(event_day) - 1]['number_pair']
             timer += "\n\n"
@@ -679,6 +680,7 @@ async def process_timetable_custom_command(msg: types.Message):
             return
 
         timer = ""
+        TIME = timeObj()
         now = datetime.datetime.now() + datetime.timedelta(hours=3)
         if now.day >= datetime.datetime.strptime(todayKey, "%d.%m.%Y").day:
             n = event_day[len(event_day) - 1]['number_pair']
