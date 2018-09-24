@@ -767,7 +767,7 @@ async def alarm_command(msg: types.Message):
                     await bot.send_message(MY_ID, str(e) + " " + u[1])
                     time.sleep(0.5)
 
-@dp.message_handler(content_types=ContentType.PHOTO, func=lambda message: message.from_user.id == MY_ID and bool(re.match(r"\A(/send)", message['photo'][0]['caption'])))
+@dp.message_handler(content_types=ContentType.PHOTO, func=lambda message: message.from_user.id == MY_ID and bool(re.match(r"\A(/send)", message['caption'])))
 async def process_send_image_command(message: types.Message):
     try:
         id = int(message['photo'][0]['caption'][5:16])
