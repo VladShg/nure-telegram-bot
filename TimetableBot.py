@@ -771,6 +771,8 @@ async def alarm_command(msg: types.Message):
 async def process_sendm_command(message: types.Message):
     id = int(message.text[7:16])
     msg = message.text[16:]
+    print(id)
+    print(msg)
     msg += "\nОтветить: /reply [text]"
     try:
         await bot.send_message(id, msg)
