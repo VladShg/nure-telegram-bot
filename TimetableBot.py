@@ -769,14 +769,14 @@ async def alarm_command(msg: types.Message):
 
 @dp.message_handler(regexp=r"\A(/send)", func=lambda message: message.from_user.id == MY_ID)
 async def process_sendm_command(message: types.Message):
-    id = int(message.text[6:16])
-    msg = message.text[17:]
+    id = int(message.text[7:16])
+    msg = message.text[16:]
     msg += "\nОтветить: /reply [text]"
-    await bot.send_message(id, msg)
+    try:
+        await bot.send_message(id, msg)
+    except Exception as e:
+        await bot.send_message(MY_ID, str(e))
 
-    # try:
-    # except Exception as e:
-        # await bot.send_message(MY_ID, str(e))
 
 @dp.message_handler(func=lambda message: message.from_user.id == MY_ID and bool(re.match("\A(/send)", message.text) == True))
 async def process_send_message_command(message: types.Message):
