@@ -45,6 +45,7 @@ def update_data():
             url = g[6]
             http = urllib3.PoolManager()
             r = http.request('GET', url)
+            time.sleep(10)
             obj = json.loads(r.data.decode('cp1251'))
             c.execute("UPDATE cache SET events = {}, teachers = {}, subjects = {}, types = {} WHERE id={}".format(Json(obj['events']),
                      Json(obj['teachers']), Json(obj['subjects']), Json(obj['types']), g[0]))
@@ -421,53 +422,6 @@ async def process_start_command(message: types.Message):
     set_state(message.from_user.id, StatesGroup.S_NONE.value)
     await bot.send_message(message.from_user.id, "Расписание\n\n🔀 — На день\n1️⃣ — На 1 день\n7️⃣ — На 7 дней\n🔢 — На 30 дней\n\n 🏠 — Стартовая страница /start\n ⚙️ — Настройки /settings", reply_markup=kb_start)
 
-@dp.message_handler(commands=['db'])
-async def process_db_command(message: types.Message):
-    if message.from_user.id != MY_ID:
-        await bot.send_message(message.from_user.id, "sosi hui")
-        return
-    connection()    
-    with conn:
-        c.execute("SELECT * FROM users")
-        lst = c.fetchall()
-        s = ""
-        for n in range(len(lst)):
-            if len(s) != 0:
-                s += "\n"
-            s += str(lst[n])
-            if n % 5 == 0 :
-                await bot.send_message(message.from_user.id, s)
-                s = ""
-        if len(s) != 0:
-            await bot.send_message(message.from_user.id, s)
-            
-@dp.message_handler(commands=['dbf'])
-async def process_dbf_command(message: types.Message):
-    if message.from_user.id != MY_ID:
-        await bot.send_message(message.from_user.id, "sosi hui")
-        return
-    with conn:
-        c.execute("SELECT * FROM users")
-        lst = sorted(c.fetchall(), key=lambda tup: tup[7])
-        s = ""
-        for n in range(len(lst)):
-            s += lst[n][1] + " "
-            H = lst[n][7].hour + 3
-            s += lst[n][7].strftime("%d.%m {}:%M").format(str(H)) + " "
-            s += str(lst[n][8]) + " "
-            s += str(lst[n][10])
-            if n % 10 == 0 and n != 0:
-                await bot.send_message(message.from_user.id, s)
-                s = ""
-            else:
-                s += "\n"
-        if n % 10 != 0:
-            await bot.send_message(message.from_user.id, s)
-        
-@dp.message_handler(commands=['update'])
-async def process_update_command(message: types.Message):
-    update_data()
-
 @dp.message_handler(commands=["tn"])
 async def teacher_name_change(msg: types.Message):
     boolChange(msg.from_user.id, "short_teacher")
@@ -591,55 +545,6 @@ async def process_info_command(msg: types.Message):
 async def process_info_emoji_command(msg: types.Message):
     await process_info_command(msg)
 
-@dp.message_handler(regexp="\A(/alarm)")
-async def alarm_command(msg: types.Message):
-    s = msg.text[7:]
-    s += "\n\nОтключить сообщения: /nt"
-    if msg.from_user.id != MY_ID:
-        await bot.send_message(msg.from_user.id, "Нужны права администратора", reply_markup=kb_additional)
-        return
-    if len(msg.text) <= 7:
-        await bot.send_message(msg.from_user.id, "Пустое сообщение", reply_markup=kb_start)
-        return
-    with conn:
-        c.execute("SELECT * FROM users")
-        users = c.fetchall()
-        for u in users:
-            if u[10] == 1:
-                try:
-                    f = open('notification/update.png', 'rb')
-                    await bot.send_photo(u[0], caption = s, reply_markup=kb_additional, photo=f)
-                    time.sleep(1)
-                except Exception as e: 
-                    await bot.send_message(MY_ID, str(e) + " " + u[1])
-                    time.sleep(1)
-
-@dp.message_handler(regexp="\A(/sendm)")
-async def process_sendm_command(message: types.Message):
-    id = int(message.text[7:16])
-    msg = message.text[17:]
-    msg += "\nОтветить: /reply [text]"
-
-    try:
-        await bot.send_message(str(id), msg)
-    except Exception as e:
-        await bot.send_message(MY_ID, str(e))
-
-@dp.message_handler(content_types=ContentType.PHOTO)
-async def process_sendi_command(message: types.Message):
-    try:
-        id = int(message['caption'][:9])
-        s = message['caption'][10:]
-        s += "\nОтветить: /reply [text]"
-        await bot.send_photo(chat_id=id, photo=message['photo'][0]['file_id'], caption=s)
-    except Exception as e:
-        await bot.send_message(MY_ID, str(e))
-
-@dp.message_handler(regexp="\A(/reply)")
-async def process_reply_command(message: types.Message):
-    s = message.text[7:]
-    await bot.send_message(MY_ID, s)
-
 @dp.message_handler(regexp="\A(🔀)\Z")
 async def process_timetable_custom_command(msg: types.Message):
         connection()        
@@ -684,12 +589,10 @@ async def process_timetable_custom_command(msg: types.Message):
                 events = obj['events']
                 teachers = obj['teachers']
                 subjects = obj['subjects']
-                typs = obj['types']
             else:
                 events = result[0][2]
                 teachers = result[0][3]
                 subjects = result[0][4]
-                typs = result[0][5]        
 
         event_day = list()
 
@@ -764,6 +667,133 @@ async def process_timetable7_command(msg: types.Message):
 async def process_timetable30_command(msg: types.Message):
     register(msg)
     await timetable(msg.from_user.id, 30)
+
+#region admin
+
+@dp.message_handler(commands=['db'])
+async def process_db_command(message: types.Message):
+    if message.from_user.id != MY_ID:
+        await bot.send_message(message.from_user.id, "sosi hui")
+        return
+    connection()    
+    with conn:
+        c.execute("SELECT * FROM users")
+        lst = c.fetchall()
+        s = ""
+        for n in range(len(lst)):
+            if len(s) != 0:
+                s += "\n"
+            s += str(lst[n])
+            if n % 5 == 0 :
+                await bot.send_message(message.from_user.id, s)
+                s = ""
+        if len(s) != 0:
+            await bot.send_message(message.from_user.id, s)
+            
+@dp.message_handler(commands=['dbf'])
+async def process_dbf_command(message: types.Message):
+    if message.from_user.id != MY_ID:
+        await bot.send_message(message.from_user.id, "sosi hui")
+        return
+    with conn:
+        c.execute("SELECT * FROM users")
+        lst = sorted(c.fetchall(), key=lambda tup: tup[7])
+        s = ""
+        for n in range(len(lst)):
+            s += lst[n][1] + " "
+            H = lst[n][7].hour + 3
+            s += lst[n][7].strftime("%d.%m {}:%M").format(str(H)) + " "
+            s += str(lst[n][8]) + " "
+            s += str(lst[n][10])
+            if n % 10 == 0 and n != 0:
+                await bot.send_message(message.from_user.id, s)
+                s = ""
+            else:
+                s += "\n"
+        if n % 10 != 0:
+            await bot.send_message(message.from_user.id, s)
+        
+@dp.message_handler(commands=['updateall'])
+async def process_update_all_command(message: types.Message):
+    if message.from_user.id == MY_ID:
+        update_data()
+    else:
+        await bot.send_message(message.from_user.id, "Нужны права администратора")
+
+@dp.message_handler(commands=['update'])
+async def process_update_command(message: types.Message):
+    with conn:
+        c.execute("SELECT * FROM users WHERE id={}".format(message.from_user.id))
+        user = c.fetchone()
+        group_id = user[6]
+        groupd_name = user[5]
+        
+        c.execute("SELECT * FROM cache WHERE id={}".format(group_id))
+        start = datetime.datetime.now()
+        group = c.fetchone()
+        url = group[6]
+        http = urllib3.PoolManager()
+        r = http.request('GET', url)
+        time.sleep(5)
+        obj = json.loads(r.data.decode('cp1251'))
+        c.execute("UPDATE cache SET events = {}, teachers = {}, subjects = {}, types = {} WHERE id={}".format(Json(obj['events']),
+                 Json(obj['teachers']), Json(obj['subjects']), Json(obj['types']), group[0]))
+        end = datetime.datetime.now()
+
+        s = "Овновлена группа {} {}-{}".format(groupd_name, start.strftime("%H:%M:%S"), end.strftime("%H:%M:%S"))
+        await bot.send_message(message.from_user.id, s)
+
+@dp.message_handler(regexp="\A(/alarmt)")
+async def alarm_command(msg: types.Message):
+    connection()
+    s = msg.text[8:]
+    s += "\n\nОтключить сообщения: /nt"
+    if msg.from_user.id != MY_ID:
+        await bot.send_message(msg.from_user.id, "Нужны права администратора", reply_markup=kb_additional)
+        return
+    if len(msg.text) <= 8:
+        await bot.send_message(msg.from_user.id, "Пустое сообщение", reply_markup=kb_start)
+        return
+    with conn:
+        c.execute("SELECT * FROM users")
+        users = c.fetchall()
+        for u in users:
+            if u[10] == 1:
+                try:
+                    await bot.send_message(u[0], text = s, reply_markup=kb_additional)
+                    time.sleep(0.5)
+                except Exception as e: 
+                    await bot.send_message(MY_ID, str(e) + " " + u[1])
+                    time.sleep(0.5)
+
+@dp.message_handler(regexp="\A(/sendm)")
+async def process_sendm_command(message: types.Message):
+    id = int(message.text[7:16])
+    msg = message.text[17:]
+    msg += "\nОтветить: /reply [text]"
+
+    try:
+        await bot.send_message(str(id), msg)
+    except Exception as e:
+        await bot.send_message(MY_ID, str(e))
+
+@dp.message_handler(content_types=ContentType.PHOTO)
+async def process_sendi_command(message: types.Message):
+    try:
+        id = int(message['caption'][:9])
+        s = message['caption'][10:]
+        s += "\nОтветить: /reply [text]"
+        await bot.send_photo(chat_id=id, photo=message['photo'][0]['file_id'], caption=s)
+    except Exception as e:
+        await bot.send_message(MY_ID, str(e))
+
+@dp.message_handler(regexp="\A(/reply)")
+async def process_reply_command(message: types.Message):
+    s = message.text[7:]
+    await bot.send_message(MY_ID, s)
+
+
+#endregion
 
 @dp.message_handler()
 async def echo_message(msg: types.Message):
