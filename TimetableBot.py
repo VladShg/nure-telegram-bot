@@ -781,11 +781,8 @@ async def process_sendm_command(message: types.Message):
 @dp.message_handler(content_types=ContentType.PHOTO)
 @dp.message_handler(func=lambda message: bool(re.match(r"\A(/sendp)", message.photo[0]['caption']) == True))
 async def process_sendi_command(message: types.Message):
-    print("im in")
-    bool(re.match(r"hello[0-9]+", 'hello1'))
-    
     try:
-        id = int(message['caption'][:9])
+        id = int(message['caption'][6:14])
         s = message['caption'][10:]
         s += "\nОтветить: /reply [text]"
         await bot.send_photo(chat_id=id, photo=message['photo'][0]['file_id'], caption=s)
