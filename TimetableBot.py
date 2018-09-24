@@ -9,6 +9,7 @@ from psycopg2.extras import Json
 from multiprocessing import Process
 import psycopg2
 import os
+import re
 import datetime
 import schedule
 import time
@@ -471,7 +472,7 @@ async def notify_change(msg: types.Message):
 
 # endregion
 
-@dp.message_handler(regexp="\A(⚙️)\Z")
+@dp.message_handler(regexp=r"\A(⚙️)\Z")
 async def process_emoji_settings_command(msg: types.Message):
     await process_settings_command(msg)
 
@@ -541,11 +542,11 @@ async def process_info_command(msg: types.Message):
     s += "Обратная связь: @VledSh"
     await bot.send_message(msg.from_user.id, s, reply_markup=kb_additional, parse_mode="HTML")
 
-@dp.message_handler(regexp="\A(🔍)\Z")
+@dp.message_handler(regexp=r"\A(🔍)\Z")
 async def process_info_emoji_command(msg: types.Message):
     await process_info_command(msg)
 
-@dp.message_handler(regexp="\A(🔀)\Z")
+@dp.message_handler(regexp=r"\A(🔀)\Z")
 async def process_timetable_custom_command(msg: types.Message):
         connection()        
         register(msg)
@@ -653,20 +654,43 @@ async def process_timetable_custom_command(msg: types.Message):
         s += timer
         await bot.send_message(msg.from_user.id, s, parse_mode="HTML", reply_markup=kb_navigate)
 
-@dp.message_handler(regexp="\A(1️⃣)\Z")
+@dp.message_handler(regexp=r"\A(1️⃣)\Z")
 async def process_timetable1_command(msg: types.Message):
     register(msg)    
     await timetable(msg.from_user.id, 1)
     
-@dp.message_handler(regexp="\A(7️⃣)\Z")
+@dp.message_handler(regexp=r"\A(7️⃣)\Z")
 async def process_timetable7_command(msg: types.Message):
     register(msg)
     await timetable(msg.from_user.id, 7)
 
-@dp.message_handler(regexp="\A(🔢)\Z")
+@dp.message_handler(regexp=r"\A(🔢)\Z")
 async def process_timetable30_command(msg: types.Message):
     register(msg)
     await timetable(msg.from_user.id, 30)
+
+@dp.message_handler(commands=['update'])
+async def process_update_command(message: types.Message):
+    with conn:
+        c.execute("SELECT * FROM users WHERE id={}".format(message.from_user.id))
+        user = c.fetchone()
+        group_id = user[6]
+        groupd_name = user[5]
+        
+        c.execute("SELECT * FROM cache WHERE id={}".format(group_id))
+        start = datetime.datetime.now()
+        group = c.fetchone()
+        url = group[6]
+        http = urllib3.PoolManager()
+        r = http.request('GET', url)
+        time.sleep(5)
+        obj = json.loads(r.data.decode('cp1251'))
+        c.execute("UPDATE cache SET events = {}, teachers = {}, subjects = {}, types = {} WHERE id={}".format(Json(obj['events']),
+                 Json(obj['teachers']), Json(obj['subjects']), Json(obj['types']), group[0]))
+        end = datetime.datetime.now()
+
+        s = "Овновлена группа {} {}-{}".format(groupd_name, start.strftime("%H:%M:%S"), end.strftime("%H:%M:%S"))
+        await bot.send_message(message.from_user.id, s)
 
 #region admin
 
@@ -720,30 +744,7 @@ async def process_update_all_command(message: types.Message):
     else:
         await bot.send_message(message.from_user.id, "Нужны права администратора")
 
-@dp.message_handler(commands=['update'])
-async def process_update_command(message: types.Message):
-    with conn:
-        c.execute("SELECT * FROM users WHERE id={}".format(message.from_user.id))
-        user = c.fetchone()
-        group_id = user[6]
-        groupd_name = user[5]
-        
-        c.execute("SELECT * FROM cache WHERE id={}".format(group_id))
-        start = datetime.datetime.now()
-        group = c.fetchone()
-        url = group[6]
-        http = urllib3.PoolManager()
-        r = http.request('GET', url)
-        time.sleep(5)
-        obj = json.loads(r.data.decode('cp1251'))
-        c.execute("UPDATE cache SET events = {}, teachers = {}, subjects = {}, types = {} WHERE id={}".format(Json(obj['events']),
-                 Json(obj['teachers']), Json(obj['subjects']), Json(obj['types']), group[0]))
-        end = datetime.datetime.now()
-
-        s = "Овновлена группа {} {}-{}".format(groupd_name, start.strftime("%H:%M:%S"), end.strftime("%H:%M:%S"))
-        await bot.send_message(message.from_user.id, s)
-
-@dp.message_handler(regexp="\A(/alarmt)")
+@dp.message_handler(regexp=r"\A(/alarmt)")
 async def alarm_command(msg: types.Message):
     connection()
     s = msg.text[8:]
@@ -766,7 +767,7 @@ async def alarm_command(msg: types.Message):
                     await bot.send_message(MY_ID, str(e) + " " + u[1])
                     time.sleep(0.5)
 
-@dp.message_handler(regexp="\A(/sendm)")
+@dp.message_handler(regexp=r"\A(/sendm)")
 async def process_sendm_command(message: types.Message):
     id = int(message.text[7:16])
     msg = message.text[17:]
@@ -778,7 +779,11 @@ async def process_sendm_command(message: types.Message):
         await bot.send_message(MY_ID, str(e))
 
 @dp.message_handler(content_types=ContentType.PHOTO)
+@dp.message_handler(func=lambda message: bool(re.match(r"\A(/sendp)", message.photo[0]['caption']) == True))
 async def process_sendi_command(message: types.Message):
+    print("im in")
+    bool(re.match(r"hello[0-9]+", 'hello1'))
+    
     try:
         id = int(message['caption'][:9])
         s = message['caption'][10:]
