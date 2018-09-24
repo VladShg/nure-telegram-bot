@@ -783,7 +783,9 @@ async def process_sendm_command(message: types.Message):
 async def process_sendi_command(message: types.Message):
     try:
         id = int(message['caption'][6:14])
-        s = message['caption'][10:]
+        s = message['caption'][15:]
+        print(id)
+        print(s)
         s += "\nОтветить: /reply [text]"
         await bot.send_photo(chat_id=id, photo=message['photo'][0]['file_id'], caption=s)
     except Exception as e:
