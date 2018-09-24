@@ -623,6 +623,10 @@ async def process_sendm_command(message: types.Message):
     except Exception as e:
         await bot.send_message(MY_ID, str(e))
 
+@dp.message_handler(content_types=ContentType.PHOTO)
+async def process_sendi_command(message: types.Message):
+    await bot.send_message(id, msg)
+
 @dp.message_handler(regexp="\A(🔀)\Z")
 async def process_timetable_custom_command(msg: types.Message):
         connection()        
