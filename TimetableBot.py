@@ -377,12 +377,13 @@ async def process_callback_timetable_swift(call: types.CallbackQuery):
                     else:
                         for e in event_day:
                             if now > TIME['start'][e['number_pair']-1] and now < TIME['end'][e['number_pair']-1]:
-                                time = TIME['end'][e['number_pair']-1] - now()
-                                timer += "До конца пары: " + time.strftime("%H:%M:%S")
+                                time = TIME['end'][e['number_pair']-1] - now
+                                timer += "До конца пары: " + str(time)[:7]
                                 break
                             if now < TIME['start'][e['number_pair']-1]:
-                                time = TIME['start'][e['number_pair']-1] - now()
-                                timer += "До начала пары: "
+                                time = TIME['start'][e['number_pair']-1] - now
+                                timer += "До начала пары: " + str(time)[:7]
+                                break
         
         start = ['7:45', "9:30", "11:15", "13:10", "14:55", "16:40"]
         end = ['9:20', "11:05", "12:50", "14:45", "16:30", "18:15"]
