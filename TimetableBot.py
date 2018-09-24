@@ -767,31 +767,31 @@ async def alarm_command(msg: types.Message):
                     await bot.send_message(MY_ID, str(e) + " " + u[1])
                     time.sleep(0.5)
 
-@dp.message_handler(regexp=r"\A(/sendm)")
+@dp.message_handler(regexp=r"\A(/send)")
 async def process_sendm_command(message: types.Message):
     id = int(message.text[7:16])
     msg = message.text[17:]
     msg += "\nОтветить: /reply [text]"
 
-    try:
-        await bot.send_message(str(id), msg)
-    except Exception as e:
-        await bot.send_message(MY_ID, str(e))
+    # try:
+    await bot.send_message(id, msg)
+    # except Exception as e:
+        # await bot.send_message(MY_ID, str(e))
 
-@dp.message_handler()
+@dp.message_handler(func=lambda message: message.from_user.id == MY_ID and bool(re.match("\A(/send)", message.text) == True))
 async def process_send_message_command(message: types.Message):
     print(message.from_user.id == MY_ID)
     print(bool(re.match("\A(/send)", message.text) == True))
-    # try:
-    print("inside sendm")
-    id = int(message['caption'][5:15])
-    s = message['caption'][16:]
-    print(id)
-    print(s)
-    s += "\nОтветить: /reply [text]"
-    await bot.send_message(chat_id=id, text=s)
-    # except Exception as e:
-        # await bot.send_message(MY_ID, str(e))
+    try:
+        print("inside sendm")
+        id = int(message['caption'][5:15])
+        s = message['caption'][16:]
+        print(id)
+        print(s)
+        s += "\nОтветить: /reply [text]"
+        await bot.send_message(chat_id=id, text=s)
+    except Exception as e:
+        await bot.send_message(MY_ID, str(e))
 
 @dp.message_handler(content_types=ContentType.PHOTO, func=lambda message: bool(re.match(r"\A(/send)", message.photo[0]['caption']) == True))
 async def process_send_image_command(message: types.Message):
