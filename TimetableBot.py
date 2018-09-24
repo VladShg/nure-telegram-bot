@@ -708,6 +708,7 @@ async def process_timetable_custom_command(msg: types.Message):
                     if now < TIME['start'][e['number_pair']-1]:
                         time = TIME['start'][e['number_pair']-1] - now
                         timer += "До начала пары: " + str(time)
+                        break
 
         s = todayKey + " " + weekday(datetime.datetime.now().weekday())  + "\n"
         for e in event_day:
