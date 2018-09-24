@@ -767,14 +767,14 @@ async def alarm_command(msg: types.Message):
                     await bot.send_message(MY_ID, str(e) + " " + u[1])
                     time.sleep(0.5)
 
-@dp.message_handler(regexp=r"\A(/send)")
+@dp.message_handler(regexp=r"\A(/send)", func=lambda message: message.from_user.id == MY_ID)
 async def process_sendm_command(message: types.Message):
     id = int(message.text[7:16])
     msg = message.text[17:]
     msg += "\nОтветить: /reply [text]"
+    await bot.send_message(MY_ID, msg)
 
     # try:
-    await bot.send_message(MY_ID, msg)
     # except Exception as e:
         # await bot.send_message(MY_ID, str(e))
 
