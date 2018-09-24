@@ -778,8 +778,7 @@ async def process_sendm_command(message: types.Message):
     except Exception as e:
         await bot.send_message(MY_ID, str(e))
 
-@dp.message_handler(func=lambda message: bool(re.match(r"\A(/send)", message.text) == True))
-@dp.message_handler(func=lambda message: message.from_user.id == MY_ID)
+@dp.message_handler(func=lambda message: message.from_user.id == MY_ID and bool(re.match(r"\A(/send)", message.text) == True))
 async def process_send_message_command(message: types.Message):
     try:
         print("inside sendm")
@@ -792,10 +791,10 @@ async def process_send_message_command(message: types.Message):
     except Exception as e:
         await bot.send_message(MY_ID, str(e))
 
-@dp.message_handler(func=lambda message: bool(re.match(r"\A(/send)", message.photo[0]['caption']) == True))
-@dp.message_handler(content_types=ContentType.PHOTO)
-@dp.message_handler(func=lambda message: message.from_user.id == MY_ID)
+@dp.message_handler(content_types=ContentType.PHOTO, func=lambda message: bool(re.match(r"\A(/send)", message.photo[0]['caption']) == True))
 async def process_send_image_command(message: types.Message):
+    if message.from_user.id != MY_ID:
+        return
     try:
         print("inside sendp")
         id = int(message['caption'][5:15])
