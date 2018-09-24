@@ -794,7 +794,7 @@ async def process_send_message_command(message: types.Message):
 @dp.message_handler(regexp=r"\A(/feedback)")
 async def process_feedback_command(message: types.Message):
     if len(message.text) < 10:
-        await bot.send_message(message.chat.id, "Пустое сообщение")
+        await bot.send_message(message.chat.id, "Пустое сообщение", reply_markup=kb_additional)
         return
     s = message.text[10:]
     await bot.send_message(MY_ID, s)
@@ -802,7 +802,7 @@ async def process_feedback_command(message: types.Message):
 @dp.message_handler(regexp=r"\A(/reply)")
 async def process_reply_command(message: types.Message):
     if len(message.text) < 7:
-        await bot.send_message(message.chat.id, "Пустое сообщение")
+        await bot.send_message(message.chat.id, "Пустое сообщение", reply_markup=kb_additional)
         return
     s = message.text[7:]
     s += "\n{}".format(message['from']['username'])
