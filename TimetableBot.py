@@ -539,6 +539,7 @@ async def process_info_command(msg: types.Message):
     s += "Обновление расписания ежедневно в 5:30, на всякий случай можно обновить данные вручную(для указаной в настройках группы): /update"
     s += "\n\n"
     s += "Анонимная обратная связь: /feedback [текст]"
+    s += "\n"
     s += "Обратная связь: @VledSh"
     await bot.send_message(msg.from_user.id, s, reply_markup=kb_additional, parse_mode="HTML")
 
