@@ -618,6 +618,8 @@ async def alarm_command(msg: types.Message):
 async def process_sendm_command(message: types.Message):
     id = int(message.text[7:16])
     msg = message.text[17:]
+    msg += "\nОтветить: /reply [text]"
+
     try:
         await bot.send_message(str(id), msg)
     except Exception as e:
@@ -628,6 +630,7 @@ async def process_sendi_command(message: types.Message):
     try:
         id = int(message['caption'][:9])
         s = message['caption'][10:]
+        s += "\nОтветить: /reply [text]"
         await bot.send_photo(chat_id=id, photo=message['photo'][0]['file_id'], caption=s)
     except Exception as e:
         await bot.send_message(MY_ID, str(e))
