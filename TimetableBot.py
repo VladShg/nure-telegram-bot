@@ -800,6 +800,8 @@ async def process_feedback_command(message: types.Message):
 
 @dp.message_handler(regexp=r"\A(/reply)")
 async def process_reply_command(message: types.Message):
+    if len(message.text) < 7:
+        await bot.send_message(message.chat.id, "Пустое сообщение")
     s = message.text[7:]
     s += "\n{}".format(message['from']['username'])
     await bot.send_message(MY_ID, s)
