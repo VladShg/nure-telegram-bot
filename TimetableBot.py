@@ -774,7 +774,7 @@ async def process_sendm_command(message: types.Message):
     msg += "\nОтветить: /reply [text]"
 
     # try:
-    await bot.send_message(id, msg)
+    await bot.send_message(MY_ID, msg)
     # except Exception as e:
         # await bot.send_message(MY_ID, str(e))
 
