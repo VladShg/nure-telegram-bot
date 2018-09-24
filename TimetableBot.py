@@ -799,8 +799,14 @@ async def process_send_image2_command(message: types.Message):
         await bot.send_message(MY_ID, str(e))
 
 @dp.message_handler(regexp=r"\A(/feedback)")
+async def process_feedback_command(message: types.Message):
+    s = message.text[10:]
+    await bot.send_message(MY_ID, s)
+
+@dp.message_handler(regexp=r"\A(/reply)")
 async def process_reply_command(message: types.Message):
     s = message.text[7:]
+    s += "\n{}".format(message['from']['username'])
     await bot.send_message(MY_ID, s)
 
 
