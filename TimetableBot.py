@@ -778,10 +778,11 @@ async def process_sendm_command(message: types.Message):
     except Exception as e:
         await bot.send_message(MY_ID, str(e))
 
-@dp.message_handler(func=lambda message: message.from_user.id == MY_ID)
 @dp.message_handler(func=lambda message: bool(re.match(r"\A(/send)", message.text) == True))
+@dp.message_handler(func=lambda message: message.from_user.id == MY_ID)
 async def process_send_message_command(message: types.Message):
     try:
+        print("inside sendm")
         id = int(message['caption'][5:15])
         s = message['caption'][16:]
         print(id)
@@ -791,11 +792,12 @@ async def process_send_message_command(message: types.Message):
     except Exception as e:
         await bot.send_message(MY_ID, str(e))
 
-@dp.message_handler(func=lambda message: message.from_user.id == MY_ID)
-@dp.message_handler(content_types=ContentType.PHOTO)
 @dp.message_handler(func=lambda message: bool(re.match(r"\A(/send)", message.photo[0]['caption']) == True))
+@dp.message_handler(content_types=ContentType.PHOTO)
+@dp.message_handler(func=lambda message: message.from_user.id == MY_ID)
 async def process_send_image_command(message: types.Message):
     try:
+        print("inside sendp")
         id = int(message['caption'][5:15])
         s = message['caption'][16:]
         print(id)
