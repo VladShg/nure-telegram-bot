@@ -744,15 +744,21 @@ async def process_update_all_command(message: types.Message):
     else:
         await bot.send_message(message.from_user.id, "Нужны права администратора")
 
-@dp.message_handler(regexp=r"\A(/alarmt)")
+@dp.message_handler(content_types=ContentType.PHOTO, func=lambda message: bool(re.match(r"\A(/alarm)", message['caption'])))
 async def alarm_command(msg: types.Message):
+    # func=lambda message: bool(re.match(r"\A(/alarm)", message['caption']))
     connection()
-    s = msg.text[8:]
+    print(bool(re.match(r"\A(/alarm)", msg['caption'])))
+    print(msg['caption'])
+    print("inside alarm")
+    s = msg['caption'][7:]
+    print(id)
+    print(s)
     s += "\n\nОтключить сообщения: /nt"
     if msg.from_user.id != MY_ID:
         await bot.send_message(msg.from_user.id, "Нужны права администратора", reply_markup=kb_additional)
         return
-    if len(msg.text) <= 8:
+    if len(msg.caption) <= 7:
         await bot.send_message(msg.from_user.id, "Пустое сообщение", reply_markup=kb_start)
         return
     with conn:
@@ -761,7 +767,7 @@ async def alarm_command(msg: types.Message):
         for u in users:
             if u[10] == 1:
                 try:
-                    await bot.send_message(u[0], text = s, reply_markup=kb_additional)
+                    await bot.send_photo(u[0], photo=msg['photo'][0]['file_id'], caption=s, reply_markup=kb_additional)
                     time.sleep(0.5)
                 except Exception as e: 
                     await bot.send_message(MY_ID, str(e) + " " + u[1])
@@ -782,19 +788,6 @@ async def process_send_message_command(message: types.Message):
     msg += "\nОтветить: /reply [text]"
     try:
         await bot.send_message(id, msg)
-    except Exception as e:
-        await bot.send_message(MY_ID, str(e))
-
-@dp.message_handler(content_types=ContentType.PHOTO, func=lambda message: bool(re.match(r"\A(/send)", message['photo'][0]['caption']) == True))
-async def process_send_image2_command(message: types.Message):
-    try:
-        print("inside sendp")
-        id = int(message['caption'][5:15])
-        s = message['caption'][16:]
-        print(id)
-        print(s)
-        s += "\nОтветить: /reply [text]"
-        await bot.send_photo(chat_id=id, photo=message['photo'][0]['file_id'], caption=s)
     except Exception as e:
         await bot.send_message(MY_ID, str(e))
 
