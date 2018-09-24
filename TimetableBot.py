@@ -704,7 +704,7 @@ async def process_timetable_custom_command(msg: types.Message):
                 for e in event_day:
                     if now > TIME['start'][e['number_pair']-1] and now < TIME['end'][e['number_pair']-1]:
                         time = TIME['end'][e['number_pair']-1] - now
-                        timer += "До конца пары: " + str(time)
+                        timer += "До конца пары: " + str(time)[:7]
                         break
                     if now < TIME['start'][e['number_pair']-1]:
                         time = TIME['start'][e['number_pair']-1] - now
