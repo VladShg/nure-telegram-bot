@@ -628,10 +628,14 @@ async def process_sendi_command(message: types.Message):
     try:
         id = int(message['caption'][:9])
         s = message['caption'][10:]
-        print(id)
         await bot.send_photo(chat_id=id, photo=message['photo'][0]['file_id'], caption=s)
     except Exception as e:
         await bot.send_message(MY_ID, str(e))
+
+@dp.message_handler(regexp="\A(/reply)")
+async def process_sendm_command(message: types.Message):
+    s = msg.text[7:]
+    await bot.send_message(MY_ID, s)
 
 @dp.message_handler(regexp="\A(🔀)\Z")
 async def process_timetable_custom_command(msg: types.Message):
