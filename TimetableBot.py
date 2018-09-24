@@ -772,9 +772,6 @@ async def process_send_image_command(message: types.Message):
     id = int(message['caption'][5:16])
     s = message['caption'][16:]
     file_id = message['photo'][0]['file_id']
-    print(id)
-    print(s)
-    print(file_id)
     s += "\nОтветить: /reply [text]"
     await bot.send_photo(chat_id=id, caption=s, photo=file_id)
 
@@ -801,7 +798,7 @@ async def process_send_image2_command(message: types.Message):
     except Exception as e:
         await bot.send_message(MY_ID, str(e))
 
-@dp.message_handler(regexp=r"\A(/reply)")
+@dp.message_handler(regexp=r"\A(/feedback)")
 async def process_reply_command(message: types.Message):
     s = message.text[7:]
     await bot.send_message(MY_ID, s)
