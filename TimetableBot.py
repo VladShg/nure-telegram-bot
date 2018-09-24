@@ -3,7 +3,7 @@ from aiogram.dispatcher import Dispatcher
 from aiogram.utils import executor
 from aiogram.types import ReplyKeyboardRemove, \
     ReplyKeyboardMarkup, KeyboardButton, \
-    InlineKeyboardMarkup, InlineKeyboardButton
+    InlineKeyboardMarkup, InlineKeyboardButton, ContentType
 import db
 from psycopg2.extras import Json
 from multiprocessing import Process
@@ -625,7 +625,7 @@ async def process_sendm_command(message: types.Message):
 
 @dp.message_handler(content_types=ContentType.PHOTO)
 async def process_sendi_command(message: types.Message):
-    await bot.send_message(id, msg)
+    await bot.send_message(id, message)
 
 @dp.message_handler(regexp="\A(🔀)\Z")
 async def process_timetable_custom_command(msg: types.Message):
