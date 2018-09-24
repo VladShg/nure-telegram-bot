@@ -778,8 +778,10 @@ async def process_sendm_command(message: types.Message):
     except Exception as e:
         await bot.send_message(MY_ID, str(e))
 
-@dp.message_handler(func=lambda message: message.from_user.id == MY_ID and bool(re.match("\A(/send)", message.text) == True))
+@dp.message_handler()
 async def process_send_message_command(message: types.Message):
+    print(message.from_user.id == MY_ID)
+    print(bool(re.match("\A(/send)", message.text) == True))
     try:
         print("inside sendm")
         id = int(message['caption'][5:15])
