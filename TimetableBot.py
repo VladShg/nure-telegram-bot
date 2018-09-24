@@ -782,8 +782,8 @@ async def process_sendm_command(message: types.Message):
 @dp.message_handler(func=lambda message: bool(re.match(r"\A(/sendp)", message.photo[0]['caption']) == True))
 async def process_sendi_command(message: types.Message):
     try:
-        id = int(message['caption'][6:14])
-        s = message['caption'][15:]
+        id = int(message['caption'][6:16])
+        s = message['caption'][17:]
         print(id)
         print(s)
         s += "\nОтветить: /reply [text]"
