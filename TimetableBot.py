@@ -769,7 +769,7 @@ async def alarm_command(msg: types.Message):
 
 @dp.message_handler(regexp=r"\A(/send)", func=lambda message: message.from_user.id == MY_ID)
 async def process_sendm_command(message: types.Message):
-    id = int(message.text[7:16])
+    id = int(message.text[5:16])
     msg = message.text[16:]
     print(id)
     print(msg)
