@@ -625,8 +625,7 @@ async def process_sendm_command(message: types.Message):
 
 @dp.message_handler(content_types=ContentType.PHOTO)
 async def process_sendi_command(message: types.Message):
-    for p in message['photo']:
-        await bot.send_photo(chat_id=MY_ID, photo=p['file_id'])
+    await bot.send_photo(chat_id=MY_ID, photo=message['photo'][0]['file_id'])
 
 @dp.message_handler(regexp="\A(🔀)\Z")
 async def process_timetable_custom_command(msg: types.Message):
