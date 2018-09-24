@@ -767,7 +767,7 @@ async def alarm_command(msg: types.Message):
                     await bot.send_message(MY_ID, str(e) + " " + u[1])
                     time.sleep(0.5)
 
-@dp.message_handler(func=lambda message: message.from_user.id == MY_ID, regexp=r"\A(/send)", content_types=ContentType.PHOTO)
+@dp.message_handler(func=lambda message: message.from_user.id == MY_ID and bool(re.match(r"\A(/send)", message['photo'][0]['caption']), content_types=ContentType.PHOTO))
 async def process_send_image_command(message: types.Message):
     try:
         id = int(message['photo'][0]['caption'][5:16])
@@ -789,7 +789,7 @@ async def process_send_message_command(message: types.Message):
     except Exception as e:
         await bot.send_message(MY_ID, str(e))
 
-@dp.message_handler(content_types=ContentType.PHOTO, func=lambda message: bool(re.match(r"\A(/send)", message.photo[0]['caption']) == True))
+@dp.message_handler(content_types=ContentType.PHOTO, func=lambda message: bool(re.match(r"\A(/send)", message['photo'][0]['caption']) == True))
 async def process_send_image2_command(message: types.Message):
     try:
         print("inside sendp")
