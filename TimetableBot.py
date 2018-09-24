@@ -633,8 +633,8 @@ async def process_sendi_command(message: types.Message):
         await bot.send_message(MY_ID, str(e))
 
 @dp.message_handler(regexp="\A(/reply)")
-async def process_sendm_command(message: types.Message):
-    s = msg.text[7:]
+async def process_reply_command(message: types.Message):
+    s = message.text[7:]
     await bot.send_message(MY_ID, s)
 
 @dp.message_handler(regexp="\A(🔀)\Z")
