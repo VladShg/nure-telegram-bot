@@ -626,7 +626,8 @@ async def process_sendm_command(message: types.Message):
 @dp.message_handler(content_types=ContentType.PHOTO)
 async def process_sendi_command(message: types.Message):
     try:
-        id = int(message['caption'][:8])
+        id = int(message['caption'][:9])
+        print(id)
         await bot.send_photo(chat_id=id, photo=message['photo'][0]['file_id'])
     except Exception as e:
         await bot.send_message(MY_ID, str(e))
