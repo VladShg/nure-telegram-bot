@@ -769,12 +769,14 @@ async def alarm_command(msg: types.Message):
 
 @dp.message_handler(content_types=ContentType.PHOTO, func=lambda message: message.from_user.id == MY_ID and bool(re.match(r"\A(/send)", message['caption'])))
 async def process_send_image_command(message: types.Message):
-    id = int(message['photo'][0]['caption'][5:16])
+    id = int(message['caption'][5:16])
     s = message['caption'][16:]
+    file_id = message['photo'][0]['file_id']
     print(id)
     print(s)
+    print(file_id)
     s += "\nОтветить: /reply [text]"
-    await bot.send_photo(chat_id=id, caption=s, photo=message['photo'][0]['file_id'])
+    await bot.send_photo(chat_id=id, caption=s, photo=file_id)
 
 @dp.message_handler(regexp=r"\A(/send)", func=lambda message: message.from_user.id == MY_ID)
 async def process_send_message_command(message: types.Message):
