@@ -23,7 +23,7 @@ from time import sleep
 from timeObj import timeObj
 from id import subject_full_name, subject_short_name, weekday, \
                teacher_full_name, teacher_short_name, format_by_type
-from config import TOKEN, MY_ID, StatesGroup
+from config import TOKEN, MY_ID, SOURCE, StatesGroup
 from groups import DATA
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.contrib.middlewares.logging import LoggingMiddleware
@@ -136,7 +136,7 @@ async def timetable(id, num):
         pair_time = user[11]
         pair_state = user[12]
         if user[6] == -1:
-            await bot.send_message(id, "Не указана группа", reply_markup=kb_start)
+            await bot.send_message(id, "Не указана группа /gr - указать", reply_markup=kb_start)
             return
 
     s_start = datetime.datetime.now()
@@ -541,6 +541,7 @@ async def process_info_command(msg: types.Message):
     s += "\n"
     s += "Обратная связь: @VledSh"
     s += "\n"
+    s += "/source - исходники бота"
     await bot.send_message(msg.from_user.id, s, reply_markup=kb_additional, parse_mode="HTML")
 
 @dp.message_handler(regexp=r"\A(🔍)\Z")
@@ -574,7 +575,7 @@ async def process_timetable_custom_command(msg: types.Message):
             pair_time = user[11]
             pair_state = user[12]
             if user[6] == -1:
-                await bot.send_message(msg.from_user.id, "Не указана группа", reply_markup=kb_start)
+                await bot.send_message(msg.from_user.id, "Не указана группа /gr - указать", reply_markup=kb_start)
                 return
 
         with conn:
@@ -701,6 +702,11 @@ async def process_reply_command(message: types.Message):
     s = message.text[7:]
     s += "\n{}".format(message['from']['username'])
     await bot.send_message(MY_ID, s)
+
+@dp.message_handler(regexp=r"\A(/source)")
+async def process_source_code_command(message: types.Message):
+    link = "<a href=\"{}\">GitHub</a>".format(SOURCE)
+    await bot.send_message(message.chat.id, link, parse_mode="HTML")
 
 @dp.message_handler(regexp=r"\A(/feedback)")
 async def process_feedback_command(message: types.Message):
