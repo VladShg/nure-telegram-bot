@@ -732,12 +732,12 @@ async def process_dbf_command(message: types.Message):
             s += str(lst[n][8]) + " "
             s += str(lst[n][10])
             if n % 10 == 0 and n != 0:
-                await bot.send_message(message.from_user.id, s)
+                await bot.send_message(message.from_user.id, s,  parse_mode="HTML")
                 s = ""
             else:
                 s += "\n"
         if n % 10 != 0:
-            await bot.send_message(message.from_user.id, s)
+            await bot.send_message(message.from_user.id, s,  parse_mode="HTML")
         
 @dp.message_handler(commands=['updateall'])
 async def process_update_all_command(message: types.Message):
