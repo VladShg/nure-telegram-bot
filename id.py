@@ -1,15 +1,3 @@
-import psycopg2
-from psycopg2.extras import Json
-import os
-import urllib3
-import json
-
-DATABASE_URL = os.environ['DATABASE_URL']
-conn = psycopg2.connect(DATABASE_URL, sslmode='require')
-c = conn.cursor()
-TEACHERS = dict()
-GROUPS = dict()
-
 def subject_full_name(obj, id):
     try:
         for s in obj:

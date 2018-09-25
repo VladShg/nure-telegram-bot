@@ -7,6 +7,7 @@ from aiogram.types import ReplyKeyboardRemove, \
 import db
 from psycopg2.extras import Json
 from multiprocessing import Process
+from keyboard import kb_additional, kb_settings, kb_start
 import psycopg2
 import os
 import re
@@ -20,7 +21,6 @@ import os
 import random
 from time import sleep
 from timeObj import timeObj
-import id
 from id import subject_full_name, subject_short_name, weekday, \
                teacher_full_name, teacher_short_name, format_by_type
 from config import TOKEN, MY_ID, StatesGroup
@@ -228,7 +228,6 @@ async def timetable(id, num):
         if num >= 7:
             time.sleep(0.3)
 
-
 bot = Bot(token=TOKEN)
 dp = Dispatcher(bot, storage=MemoryStorage())
 dp.middleware.setup(LoggingMiddleware())
@@ -275,7 +274,7 @@ async def process_callback_enter_dir(call: types.CallbackQuery):
     # except:
     #     s = "gtfo"
 
-    # Веломарафон отменили
+    # Веломарафон отменили, теперь инвалиды катают с базой данных
 
     data = eval(call.data)
 
@@ -448,7 +447,7 @@ async def notify_change(msg: types.Message):
     boolChange(msg.from_user.id, "notify")
     await process_settings_command(msg)
 
-# region do not enter
+# region rofli
 
 # @dp.message_handler(commands=["random"])
 # async def process_random_handler(message: types.Message):
@@ -693,12 +692,29 @@ async def process_update_command(message: types.Message):
         s = "Обновлены данны для группы {} {}-{}".format(groupd_name, start.strftime("%H:%M:%S"), end.strftime("%H:%M:%S"))
         await bot.send_message(message.from_user.id, s)
 
+@dp.message_handler(regexp=r"\A(/reply)")
+async def process_reply_command(message: types.Message):
+    if len(message.text) < 7:
+        await bot.send_message(message.chat.id, "Пустое сообщение", reply_markup=kb_additional)
+        return
+    s = message.text[7:]
+    s += "\n{}".format(message['from']['username'])
+    await bot.send_message(MY_ID, s)
+
+@dp.message_handler(regexp=r"\A(/feedback)")
+async def process_feedback_command(message: types.Message):
+    if len(message.text) < 10:
+        await bot.send_message(message.chat.id, "Пустое сообщение", reply_markup=kb_additional)
+        return
+    s = message.text[10:]
+    await bot.send_message(MY_ID, s)
+
 #region admin
 
 @dp.message_handler(commands=['db'])
 async def process_db_command(message: types.Message):
     if message.from_user.id != MY_ID:
-        await bot.send_message(message.from_user.id, "sosi hui")
+        await bot.send_message(message.from_user.id, "sas")
         return
     connection()    
     with conn:
@@ -718,7 +734,7 @@ async def process_db_command(message: types.Message):
 @dp.message_handler(commands=['dbf'])
 async def process_dbf_command(message: types.Message):
     if message.from_user.id != MY_ID:
-        await bot.send_message(message.from_user.id, "sosi hui")
+        await bot.send_message(message.from_user.id, "sas")
         return
     with conn:
         c.execute("SELECT * FROM users")
@@ -744,7 +760,7 @@ async def process_update_all_command(message: types.Message):
     if message.from_user.id == MY_ID:
         update_data()
     else:
-        await bot.send_message(message.from_user.id, "Нужны права администратора")
+        await bot.send_message(message.from_user.id, "sas")
 
 @dp.message_handler(content_types=ContentType.PHOTO, func=lambda message: bool(re.match(r"\A(/alarm)", message['caption'])))
 async def alarm_command(msg: types.Message):
@@ -793,59 +809,11 @@ async def process_send_message_command(message: types.Message):
     except Exception as e:
         await bot.send_message(MY_ID, str(e))
 
-@dp.message_handler(regexp=r"\A(/feedback)")
-async def process_feedback_command(message: types.Message):
-    if len(message.text) < 10:
-        await bot.send_message(message.chat.id, "Пустое сообщение", reply_markup=kb_additional)
-        return
-    s = message.text[10:]
-    await bot.send_message(MY_ID, s)
-
-@dp.message_handler(regexp=r"\A(/reply)")
-async def process_reply_command(message: types.Message):
-    if len(message.text) < 7:
-        await bot.send_message(message.chat.id, "Пустое сообщение", reply_markup=kb_additional)
-        return
-    s = message.text[7:]
-    s += "\n{}".format(message['from']['username'])
-    await bot.send_message(MY_ID, s)
-
-
 #endregion
 
 @dp.message_handler()
 async def echo_message(msg: types.Message):
     await process_start_command(msg)
-
-#region kb
-
-btn_day_custom_schedule = KeyboardButton("🔀")
-btn_day_schedule = KeyboardButton("1️⃣")
-btn_week_schedule = KeyboardButton("7️⃣")
-btn_month_schedule = KeyboardButton("🔢")
-btn_home = KeyboardButton("🏠")
-btn_settings = KeyboardButton("⚙️")
-btn_info = KeyboardButton("🔍")
-kb_start = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
-kb_start.row(btn_day_custom_schedule, btn_day_schedule, btn_week_schedule, btn_month_schedule)
-kb_start.row(btn_home, btn_settings)
-
-btn_gr = KeyboardButton("/gr")
-btn_tn = KeyboardButton("/tn")
-btn_sn = KeyboardButton("/sn")
-kb_settings = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
-kb_settings.insert(btn_gr)
-kb_settings.insert(btn_tn)
-kb_settings.insert(btn_sn)
-kb_settings.insert(btn_home)
-kb_settings.insert(btn_settings)
-kb_settings.insert(btn_info)
-
-kb_additional = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=False)
-kb_additional.insert(btn_home)
-kb_additional.insert(btn_settings)
-
-#endregion
 
 def pr1_poll():
     executor.start_polling(dp)
