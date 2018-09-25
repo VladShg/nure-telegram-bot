@@ -725,7 +725,8 @@ async def process_dbf_command(message: types.Message):
         lst = sorted(c.fetchall(), key=lambda tup: tup[7])
         s = ""
         for n in range(len(lst)):
-            s += lst[n][1] + " "
+            # s += lst[n][1] + " "
+            s += "<a href='tg://user?id=" + str(lst[n][0]) + "'>" + lst[n][1] + "</a> "
             H = lst[n][7].hour + 3
             s += lst[n][7].strftime("%d.%m {}:%M").format(str(H)) + " "
             s += str(lst[n][8]) + " "
@@ -862,4 +863,3 @@ if __name__ == "__main__":
     proc2 = Process(target=pr2_updt)
     proc1.start()
     proc2.start()
-
