@@ -690,7 +690,7 @@ async def process_update_command(message: types.Message):
                  Json(obj['teachers']), Json(obj['subjects']), Json(obj['types']), group[0]))
         end = datetime.datetime.now()
 
-        s = "Овновлена группа {} {}-{}".format(groupd_name, start.strftime("%H:%M:%S"), end.strftime("%H:%M:%S"))
+        s = "Обновлены данны для группы {} {}-{}".format(groupd_name, start.strftime("%H:%M:%S"), end.strftime("%H:%M:%S"))
         await bot.send_message(message.from_user.id, s)
 
 #region admin
