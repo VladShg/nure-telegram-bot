@@ -706,7 +706,7 @@ async def process_reply_command(message: types.Message):
 @dp.message_handler(regexp=r"\A(/source)")
 async def process_source_code_command(message: types.Message):
     link = "<a href=\"{}\">GitHub</a>".format(SOURCE)
-    await bot.send_message(message.chat.id, link, parse_mode="HTML")
+    await bot.send_message(message.chat.id, link, parse_mode="HTML", reply_markup=kb_additional)
 
 @dp.message_handler(regexp=r"\A(/feedback)")
 async def process_feedback_command(message: types.Message):
