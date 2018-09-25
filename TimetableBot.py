@@ -540,9 +540,7 @@ async def process_info_command(msg: types.Message):
     s += "Анонимная обратная связь: /feedback [текст]"
     s += "\n"
     s += "Обратная связь: @VledSh"
-    s += "\n"
-    s += "<a href=\"https://github.com/VladShg\">GitHub</a>"
-    await bot.send_message(msg.from_user.id, s, reply_markup=kb_additional, parse_mode="HTML")
+    await bot.send_message(msg.from_user.id, s, reply_markup=kb_additional)
 
 @dp.message_handler(regexp=r"\A(🔍)\Z")
 async def process_info_emoji_command(msg: types.Message):
