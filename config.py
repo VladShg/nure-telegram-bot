@@ -1,7 +1,7 @@
 from enum import Enum
 
-TOKEN = "677779116:AAGfKJSZqvsb-qTVXVR3rzYx2rST0MOw6h0"
-MY_ID = 108458898
+TOKEN = ""
+MY_ID = 0
 SOURCE = "https://github.com/VladShg/nure-telegram-bot"
 
 class StatesGroup(Enum):
