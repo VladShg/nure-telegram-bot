@@ -798,6 +798,34 @@ async def alarm_command(msg: types.Message):
                     await bot.send_message(MY_ID, str(e) + " " + u[1])
                     time.sleep(0.5)
 
+@dp.message_handler(func=lambda message: bool(re.match(r"\A(/alarm)", message['text'])))
+async def alarm_command(msg: types.Message):
+    connection()
+    print(bool(re.match(r"\A(/alarm)", msg['caption'])))
+    print(msg['text'])
+    print("inside alarm")
+    s = msg['text'][7:]
+    print(id)
+    print(s)
+    s += "\n\nОтключить сообщения: /nt"
+    if msg.from_user.id != MY_ID:
+        await bot.send_message(msg.from_user.id, "Нужны права администратора", reply_markup=kb_additional)
+        return
+    if len(msg.caption) <= 7:
+        await bot.send_message(msg.from_user.id, "Пустое сообщение", reply_markup=kb_start)
+        return
+    with conn:
+        c.execute("SELECT * FROM users")
+        users = c.fetchall()
+        for u in users:
+            if u[10] == 1:
+                try:
+                    await bot.send_message(u[0], msg, reply_markup=kb_additional)
+                    time.sleep(0.1)
+                except Exception as e: 
+                    await bot.send_message(MY_ID, str(e) + " " + u[1])
+                    time.sleep(0.1)
+
 @dp.message_handler(content_types=ContentType.PHOTO, func=lambda message: message.from_user.id == MY_ID and bool(re.match(r"\A(/send)", message['caption'])))
 async def process_send_image_command(message: types.Message):
     id = int(message['caption'][5:16])
