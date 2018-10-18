@@ -801,7 +801,7 @@ async def alarm_command(msg: types.Message):
 @dp.message_handler(func=lambda message: bool(re.match(r"\A(/alarm)", message['text'])))
 async def alarm_command(msg: types.Message):
     connection()
-    print(bool(re.match(r"\A(/alarm)", msg['caption'])))
+    print(bool(re.match(r"\A(/alarm)", msg['text'])))
     print(msg['text'])
     print("inside alarm")
     s = msg['text'][7:]
@@ -820,7 +820,7 @@ async def alarm_command(msg: types.Message):
         for u in users:
             if u[10] == 1:
                 try:
-                    await bot.send_message(u[0], msg, reply_markup=kb_additional)
+                    await bot.send_message(u[0], s, reply_markup=kb_additional)
                     time.sleep(0.1)
                 except Exception as e: 
                     await bot.send_message(MY_ID, str(e) + " " + u[1])
