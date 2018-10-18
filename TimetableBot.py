@@ -811,7 +811,7 @@ async def alarm_command(msg: types.Message):
     if msg.from_user.id != MY_ID:
         await bot.send_message(msg.from_user.id, "Нужны права администратора", reply_markup=kb_additional)
         return
-    if len(msg.caption) <= 7:
+    if len(msg.text) <= 7:
         await bot.send_message(msg.from_user.id, "Пустое сообщение", reply_markup=kb_start)
         return
     with conn:
